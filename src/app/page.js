@@ -10,7 +10,7 @@ import {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#0b0914] text-slate-100 flex flex-col selection:bg-emerald-500 selection:text-black">
       <Navbar />
 
       {/* Hero Section */}
@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* E-Pins Products Section */}
-      <section className="py-20 px-6 bg-[#080c14] relative">
+      <section className="py-20 px-6 bg-[#0b0914] relative">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <h3 className="text-cyan-400 font-bold uppercase tracking-wider text-sm">E-Pins Products</h3>
@@ -347,7 +347,7 @@ export default function Home() {
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="py-20 px-6 bg-[#080c14] relative">
+      <section id="about" className="py-20 px-6 bg-[#0b0914] relative">
         <div className="max-w-6xl mx-auto space-y-12 text-center">
           <div className="space-y-3">
             <h3 className="text-emerald-400 font-bold uppercase tracking-wider text-sm">About Us</h3>
@@ -408,7 +408,7 @@ export default function Home() {
       </section>
 
       {/* Contact Us Section */}
-      <section id="contact" className="py-20 px-6 bg-[#080c14] relative">
+      <section id="contact" className="py-20 px-6 bg-[#0b0914] relative">
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <h3 className="text-emerald-400 font-bold uppercase tracking-wider text-sm">Contact Us</h3>

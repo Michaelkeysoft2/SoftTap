@@ -34,6 +34,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Result Checker Pins', href: '/dashboard/result-checker', icon: BookOpen },
     { name: 'Fund Wallet', href: '/dashboard/fund-wallet', icon: Wallet },
     { name: 'Transaction History', href: '/dashboard/transactions', icon: History },
+    { name: 'Profile Settings', href: '/dashboard/profile', icon: User },
   ];
 
   if (user?.role === 'admin') {
@@ -41,12 +42,12 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col md:flex-row selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#0b0914] text-slate-100 flex flex-col md:flex-row selection:bg-emerald-500 selection:text-black">
       {/* Mobile Top Nav */}
       <div className="md:hidden bg-[#0a0f1d] border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5">
-            <div className="w-full h-full bg-[#080c14] rounded-[6px] flex items-center justify-center">
+            <div className="w-full h-full bg-[#0b0914] rounded-[6px] flex items-center justify-center">
               <Zap className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
             </div>
           </div>
@@ -74,7 +75,7 @@ export default function DashboardLayout({ children }) {
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2 px-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/20">
-              <div className="w-full h-full bg-[#080c14] rounded-[10px] flex items-center justify-center">
+              <div className="w-full h-full bg-[#0b0914] rounded-[10px] flex items-center justify-center">
                 <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
               </div>
             </div>

@@ -87,7 +87,7 @@ export default function FundWalletPage() {
       )}
 
       {/* Option 1: Automated Bank Transfer Virtual Account */}
-      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/30 space-y-4 relative overflow-hidden bg-gradient-to-br from-[#0a1524] to-[#080c14]">
+      <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/30 space-y-4 relative overflow-hidden bg-gradient-to-br from-[#0a1524] to-[#0b0914]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
             <Landmark className="w-5 h-5" />

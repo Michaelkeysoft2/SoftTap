@@ -69,7 +69,7 @@ export default function DashboardPage() {
       {/* Stats / Wallet Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Wallet Balance Card */}
-        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-emerald-500/30 bg-gradient-to-br from-[#0c1626] to-[#080c14] relative overflow-hidden shadow-xl">
+        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-emerald-500/30 bg-gradient-to-br from-[#0c1626] to-[#0b0914] relative overflow-hidden shadow-xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Available Balance</span>
@@ -89,7 +89,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Account Status Card */}
-        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-cyan-500/30 bg-gradient-to-br from-[#0a1524] to-[#080c14] relative overflow-hidden shadow-xl">
+        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-cyan-500/30 bg-gradient-to-br from-[#0a1524] to-[#0b0914] relative overflow-hidden shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">Account Package</span>
             <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
@@ -107,7 +107,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Referral Card */}
-        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-violet-500/30 bg-gradient-to-br from-[#120d26] to-[#080c14] relative overflow-hidden shadow-xl">
+        <div className="glass-panel p-6 rounded-3xl space-y-4 border border-violet-500/30 bg-gradient-to-br from-[#120d26] to-[#0b0914] relative overflow-hidden shadow-xl">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-violet-400 uppercase tracking-wider">Referral Code</span>
             <button

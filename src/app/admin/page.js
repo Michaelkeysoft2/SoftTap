@@ -80,7 +80,7 @@ export default function AdminPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#080c14] text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#0b0914] text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
       <Navbar />
 
       <main className="flex-1 pt-32 pb-20 px-6 max-w-7xl mx-auto w-full space-y-8">

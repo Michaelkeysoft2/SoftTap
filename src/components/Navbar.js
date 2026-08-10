@@ -24,7 +24,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#080c14]/90 backdrop-blur-xl border-b border-emerald-500/20 py-4 shadow-2xl shadow-emerald-950/20'
+          ? 'bg-[#0b0914]/90 backdrop-blur-xl border-b border-emerald-500/20 py-4 shadow-2xl shadow-emerald-950/20'
           : 'bg-transparent py-6'
       }`}
     >
@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-[#080c14] rounded-[10px] flex items-center justify-center">
+            <div className="w-full h-full bg-[#0b0914] rounded-[10px] flex items-center justify-center">
               <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
             </div>
           </div>

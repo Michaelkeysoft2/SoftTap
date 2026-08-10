@@ -13,7 +13,7 @@ export default function Footer() {
         <div className="md:col-span-1 space-y-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5 shadow-md shadow-emerald-500/20">
-              <div className="w-full h-full bg-[#080c14] rounded-[7px] flex items-center justify-center">
+              <div className="w-full h-full bg-[#0b0914] rounded-[7px] flex items-center justify-center">
                 <Zap className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
               </div>
             </div>

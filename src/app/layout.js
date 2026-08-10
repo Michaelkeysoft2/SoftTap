@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="antialiased bg-[#080c14] text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-black">
+      <body className="antialiased bg-[#0b0914] text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-black">
         {children}
       </body>
     </html>
