@@ -42,7 +42,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0914] text-slate-100 flex flex-col md:flex-row selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col md:flex-row selection:bg-orange-400 selection:text-white">
       {/* Mobile Top Nav */}
       <div className="md:hidden bg-[#0a0f1d] border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2">
