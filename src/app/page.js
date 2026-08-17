@@ -122,40 +122,47 @@ export default function Home() {
           ============================ */}
       <section
         id="home"
-        className="relative flex flex-col items-start justify-center px-6 sm:px-12 min-h-screen text-white overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #1d4ed8 70%, #f97316 100%)',
-        }}
+        className="relative flex flex-col items-start justify-center px-6 sm:px-12 md:px-16 min-h-screen text-white overflow-hidden pt-24"
       >
-        {/* Decorative overlay */}
-        <div className="absolute inset-0 bg-black/30" />
-        {/* Animated blobs */}
-        <div className="absolute top-20 right-10 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+        {/* Real Background Image with Laptop & Phone Mockup */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center -z-20 transform scale-105 transition-transform duration-1000"
+          style={{ backgroundImage: "url('/home-bg.jpg')" }}
+        />
+        
+        {/* High-contrast gradient overlay to ensure text is perfectly legible */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-950/90 via-gray-900/80 to-blue-950/60 -z-10" />
 
-        <div className="relative z-10 max-w-3xl">
-          <p className="text-base sm:text-lg md:text-xl font-medium opacity-90 mb-4 animate-fade-slide-up">
+        {/* Ambient neon light glows */}
+        <div className="absolute top-1/4 right-10 w-96 h-96 bg-orange-500/20 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-blue-600/20 rounded-full blur-[140px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl space-y-2">
+          <p className="text-base sm:text-lg md:text-xl font-medium text-orange-400 mb-2 animate-fade-slide-up">
             Welcome To SoftTap!
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 animate-fade-slide-up delay-100">
+          
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white animate-fade-slide-up delay-100">
             DATA, TV<br />
             SUBSCRIPTION,<br />
             ELECTRICITY BILLS,<br />
             EXAMS/RESULT<br />
             <span className="text-orange-400">CHECKER PINS!!</span>
           </h1>
-          <p className="text-orange-400 font-bold text-base sm:text-lg mb-8 animate-fade-slide-up delay-200">
+
+          <p className="text-gray-200 font-semibold text-base sm:text-lg pt-2 pb-4 animate-fade-slide-up delay-200">
             All Your Bills, One Tap Away.
           </p>
-          <div className="flex flex-row gap-4 animate-fade-slide-up delay-300">
+
+          <div className="flex flex-row gap-4 pt-2 animate-fade-slide-up delay-300">
             <Link href="/login">
-              <button className="btn-white-glass">
+              <button className="btn-white-glass shadow-lg">
                 <LogIn className="w-5 h-5" />
                 Login
               </button>
             </Link>
             <Link href="/register">
-              <button className="btn-orange-solid">
+              <button className="btn-orange-solid shadow-lg">
                 <UserPlus className="w-5 h-5" />
                 Register
               </button>
