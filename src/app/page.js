@@ -9,7 +9,7 @@ import { useState } from 'react';
 import {
   Wifi, Tv, Lightbulb, Signal, LogIn, UserPlus,
   Shield, Target, Users, CheckCircle2, Star,
-  Phone, Mail, MessageSquare, BookOpen, Zap, ChevronDown
+  Phone, Mail, MessageSquare, BookOpen, Zap, ChevronDown, Linkedin
 } from 'lucide-react';
 
 /* =============================================
@@ -715,6 +715,15 @@ export default function Home() {
                 <div>
                   <p className="font-bold text-blue-900">Email Support</p>
                   <p className="text-gray-500 text-sm">michaelkeysofy@gmail.com</p>
+                </div>
+              </a>
+              <a href="https://www.linkedin.com/in/michaelolayiwola/" target="_blank" rel="noopener noreferrer" className="brand-card p-5 flex items-center gap-4 block hover:border-orange-300">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                  <Linkedin className="w-6 h-6 text-blue-700" />
+                </div>
+                <div>
+                  <p className="font-bold text-blue-900">LinkedIn Profile</p>
+                  <p className="text-gray-500 text-sm">linkedin.com/in/michaelolayiwola</p>
                 </div>
               </a>
               <div className="brand-card p-5 flex items-center gap-4">

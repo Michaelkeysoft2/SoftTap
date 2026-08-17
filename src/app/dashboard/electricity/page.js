@@ -4,18 +4,18 @@ import { useState, useEffect } from 'react';
 import { Lightbulb, Zap, ArrowRight, ShieldCheck, AlertCircle, Copy, Check } from 'lucide-react';
 
 const discos = [
-  { id: 'IKEDC', name: 'Ikeja Electric (IKEDC)' },
-  { id: 'EKEDC', name: 'Eko Electric (EKEDC)' },
-  { id: 'AEDC', name: 'Abuja Electric (AEDC)' },
-  { id: 'IBEDC', name: 'Ibadan Electric (IBEDC)' },
-  { id: 'KEDCO', name: 'Kano Electric (KEDCO)' },
-  { id: 'PHED', name: 'Port Harcourt (PHED)' },
-  { id: 'JED', name: 'Jos Electric (JED)' },
-  { id: 'KAEDCO', name: 'Kaduna Electric (KAEDCO)' },
+  { id: 'IKEDC', name: 'Ikeja Electric (IKEDC)', color: 'bg-yellow-500' },
+  { id: 'EKEDC', name: 'Eko Electric (EKEDC)', color: 'bg-blue-600' },
+  { id: 'AEDC', name: 'Abuja Electric (AEDC)', color: 'bg-red-600' },
+  { id: 'IBEDC', name: 'Ibadan Electric (IBEDC)', color: 'bg-green-600' },
+  { id: 'KEDCO', name: 'Kano Electric (KEDCO)', color: 'bg-purple-600' },
+  { id: 'PHED', name: 'Port Harcourt (PHED)', color: 'bg-teal-600' },
+  { id: 'JED', name: 'Jos Electric (JED)', color: 'bg-indigo-600' },
+  { id: 'KAEDCO', name: 'Kaduna Electric (KAEDCO)', color: 'bg-orange-600' },
 ];
 
 export default function ElectricityPage() {
-  const [selectedDisco, setSelectedDisco] = useState('IKEDC');
+  const [selectedDisco, setSelectedDisco] = useState('IBEDC');
   const [meterType, setMeterType] = useState('prepaid');
   const [meterNo, setMeterNo] = useState('');
   const [amount, setAmount] = useState('');
@@ -93,11 +93,11 @@ export default function ElectricityPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-300">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-3">
-          <Lightbulb className="w-8 h-8 text-amber-400" /> Pay Electricity Bills
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-900 flex items-center gap-3">
+          <Lightbulb className="w-8 h-8 text-yellow-500" /> Pay Electricity Bills
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Instant prepaid meter tokens & bill payments for all DISCOs in Nigeria.
+        <p className="text-gray-500 text-sm mt-1">
+          Instant prepaid meter tokens &amp; bill payments for all DISCOs in Nigeria.
         </p>
       </div>
 
@@ -105,8 +105,8 @@ export default function ElectricityPage() {
         <div
           className={`p-4 rounded-2xl border text-sm font-semibold flex items-center gap-3 ${
             statusMsg.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-              : 'bg-red-500/10 border-red-500/30 text-red-400'
+              ? 'bg-green-50 border-green-300 text-green-700'
+              : 'bg-red-50 border-red-300 text-red-700'
           }`}
         >
           {statusMsg.type === 'success' ? <ShieldCheck className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
@@ -114,108 +114,116 @@ export default function ElectricityPage() {
         </div>
       )}
 
-      {/* Token Result Box */}
+      {/* Generated Token Alert */}
       {generatedToken && (
-        <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-center space-y-3">
-          <p className="text-xs font-bold text-amber-400 uppercase tracking-wider">Your Prepaid Meter Token</p>
-          <p className="text-3xl sm:text-4xl font-mono font-black text-white tracking-widest">{generatedToken}</p>
-          <button
-            onClick={handleCopyToken}
-            className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs inline-flex items-center gap-1.5 shadow-md"
-          >
-            {copiedToken ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            {copiedToken ? 'Token Copied!' : 'Copy Token'}
-          </button>
+        <div className="p-6 rounded-3xl bg-green-50 border-2 border-green-400 space-y-3 shadow-md animate-in slide-in-from-top">
+          <p className="text-xs font-bold text-green-700 uppercase tracking-wider">Your Prepaid Meter Token</p>
+          <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-green-200">
+            <span className="text-xl sm:text-2xl font-black font-mono text-green-700 tracking-wider">
+              {generatedToken}
+            </span>
+            <button
+              onClick={handleCopyToken}
+              className="p-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 transition"
+              title="Copy Token"
+            >
+              {copiedToken ? <Check className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
+            </button>
+          </div>
+          <p className="text-xs text-green-700">Enter this 20-digit token into your prepaid meter to recharge units.</p>
         </div>
       )}
 
-      <form onSubmit={handlePay} className="glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border border-slate-800">
-        <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-            1. Select Electricity Disco
+      <form onSubmit={handlePay} className="bg-white p-6 sm:p-8 rounded-3xl space-y-6 border border-gray-200 shadow-sm">
+        <div className="space-y-3">
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+            1. Select Electricity DISCO
           </label>
-          <select
-            value={selectedDisco}
-            onChange={(e) => setSelectedDisco(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-white font-semibold focus:outline-none focus:border-amber-500"
-          >
-            {discos.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {discos.map((d) => {
+              const isSelected = selectedDisco === d.id;
+              return (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setSelectedDisco(d.id)}
+                  className={`p-3 rounded-2xl border flex flex-col items-center gap-1.5 transition font-bold text-xs ${
+                    isSelected
+                      ? 'border-orange-500 bg-orange-50 text-blue-900 shadow-sm border-2'
+                      : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg ${d.color} flex items-center justify-center text-white shadow-sm`}>
+                    <Zap className="w-4 h-4" />
+                  </div>
+                  <span className="truncate w-full text-center">{d.id}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+        <div className="space-y-3">
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             2. Meter Type
           </label>
           <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setMeterType('prepaid')}
-              className={`p-3.5 rounded-xl border text-center font-bold text-sm transition ${
-                meterType === 'prepaid'
-                  ? 'bg-amber-500/10 border-amber-500 text-amber-400'
-                  : 'bg-slate-900 border-slate-800 text-slate-400'
-              }`}
-            >
-              Prepaid (Token)
-            </button>
-            <button
-              type="button"
-              onClick={() => setMeterType('postpaid')}
-              className={`p-3.5 rounded-xl border text-center font-bold text-sm transition ${
-                meterType === 'postpaid'
-                  ? 'bg-amber-500/10 border-amber-500 text-amber-400'
-                  : 'bg-slate-900 border-slate-800 text-slate-400'
-              }`}
-            >
-              Postpaid (Bill)
-            </button>
+            {['prepaid', 'postpaid'].map((type) => {
+              const isSelected = meterType === type;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => setMeterType(type)}
+                  className={`p-3.5 rounded-xl border text-center font-bold text-sm capitalize transition ${
+                    isSelected
+                      ? 'bg-orange-50 border-orange-500 text-blue-900 border-2 shadow-sm'
+                      : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  {type} Meter
+                </button>
+              );
+            })}
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             3. Meter Number
           </label>
-          <div className="relative">
-            <Zap className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              placeholder="e.g. 45012345678"
-              value={meterNo}
-              onChange={(e) => setMeterNo(e.target.value)}
-              required
-              className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-base font-medium placeholder-slate-500 focus:outline-none focus:border-amber-500"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-            4. Amount (₦)
-          </label>
           <input
-            type="number"
-            placeholder="e.g. 2000"
-            min="1000"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            type="text"
+            placeholder="e.g. 01429482910"
+            value={meterNo}
+            onChange={(e) => setMeterNo(e.target.value)}
             required
-            className="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-base font-semibold placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            className="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-base font-medium placeholder-gray-400 focus:outline-none focus:border-orange-500"
           />
         </div>
 
-        <div className="pt-4 border-t border-slate-800/80">
+        <div className="space-y-2">
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+            4. Payment Amount (₦)
+          </label>
+          <input
+            type="number"
+            min="1000"
+            placeholder="e.g. 3000 (Min: ₦1,000)"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            required
+            className="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-base font-medium placeholder-gray-400 focus:outline-none focus:border-orange-500"
+          />
+        </div>
+
+        <div className="pt-4 border-t border-gray-100 space-y-4">
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-xl"
+            className="w-full py-4 rounded-xl btn-orange text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg"
           >
-            {loading ? 'Processing Payment...' : 'Pay Electricity & Get Token'} <ArrowRight className="w-5 h-5" />
+            {loading ? 'Generating Electricity Token...' : 'Confirm & Pay Electricity'} <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       </form>

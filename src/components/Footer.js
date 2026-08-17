@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Phone, Send, Twitter, Shield, Zap } from 'lucide-react';
+import { Mail, Phone, Send, Twitter, Linkedin, Shield, Zap } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -69,6 +69,15 @@ export default function Footer() {
             </a>
 
             <div className="pt-2 flex items-center gap-3">
+              <a
+                href="https://www.linkedin.com/in/michaelolayiwola/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-lg bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-300 hover:text-orange-400 hover:border-orange-400/40 transition-all"
+                title="LinkedIn @michaelolayiwola"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
               <a
                 href="https://t.me/michalkeysoft"
                 target="_blank"

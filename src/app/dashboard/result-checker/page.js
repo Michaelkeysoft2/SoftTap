@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import { BookOpen, Copy, Check, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 
 const examTypes = [
-  { id: 'WAEC', name: 'WAEC Result Checker', price: 3320 },
-  { id: 'NECO', name: 'NECO Result Token', price: 1170 },
-  { id: 'NABTEB', name: 'NABTEB Result Checker', price: 850 },
-  { id: 'NBAIS', name: 'NBAIS e-Pin', price: 920 },
+  { id: 'WAEC', name: 'WAEC Result Checker', price: 3320, color: 'bg-blue-900', label: 'WAEC' },
+  { id: 'NECO', name: 'NECO Result Token', price: 1170, color: 'bg-green-700', label: 'NECO' },
+  { id: 'NABTEB', name: 'NABTEB Result Checker', price: 850, color: 'bg-red-700', label: 'NABTEB' },
+  { id: 'NBAIS', name: 'NBAIS e-Pin', price: 920, color: 'bg-purple-700', label: 'NBAIS' },
 ];
 
 export default function ResultCheckerPage() {
@@ -66,11 +66,11 @@ export default function ResultCheckerPage() {
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-300">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-3">
-          <BookOpen className="w-8 h-8 text-pink-400" /> Result Checker Pins
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-blue-900 flex items-center gap-3">
+          <BookOpen className="w-8 h-8 text-purple-600" /> Result Checker Pins
         </h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Purchase WAEC, NECO, NABTEB & NBAIS Result Checker Pins & Tokens instantly.
+        <p className="text-gray-500 text-sm mt-1">
+          Purchase WAEC, NECO, NABTEB &amp; NBAIS Result Checker Pins &amp; Tokens instantly.
         </p>
       </div>
 
@@ -78,8 +78,8 @@ export default function ResultCheckerPage() {
         <div
           className={`p-4 rounded-2xl border text-sm font-semibold flex items-center gap-3 ${
             statusMsg.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-              : 'bg-red-500/10 border-red-500/30 text-red-400'
+              ? 'bg-green-50 border-green-300 text-green-700'
+              : 'bg-red-50 border-red-300 text-red-700'
           }`}
         >
           {statusMsg.type === 'success' ? <ShieldCheck className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
@@ -89,14 +89,14 @@ export default function ResultCheckerPage() {
 
       {/* Generated Pins Box */}
       {purchasedPins.length > 0 && (
-        <div className="p-6 rounded-3xl bg-pink-500/10 border border-pink-500/30 space-y-4">
-          <h3 className="text-sm font-bold text-pink-400 uppercase tracking-wider text-center">Your Generated Pins</h3>
+        <div className="p-6 rounded-3xl bg-purple-50 border-2 border-purple-300 space-y-4 shadow-md">
+          <h3 className="text-sm font-bold text-purple-800 uppercase tracking-wider text-center">Your Generated Pins</h3>
           <div className="space-y-2">
             {purchasedPins.map((p, idx) => (
-              <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-800 flex justify-between items-center text-sm font-mono">
+              <div key={idx} className="p-3 rounded-xl bg-white border border-purple-200 flex justify-between items-center text-sm font-mono shadow-sm">
                 <div>
-                  <p className="text-slate-400 text-xs">Serial: <span className="text-white font-bold">{p.serialNumber}</span></p>
-                  <p className="text-slate-400 text-xs">PIN: <span className="text-pink-400 font-bold">{p.pin}</span></p>
+                  <p className="text-gray-600 text-xs">Serial: <span className="text-gray-900 font-bold">{p.serialNumber}</span></p>
+                  <p className="text-gray-600 text-xs">PIN: <span className="text-purple-700 font-bold">{p.pin}</span></p>
                 </div>
               </div>
             ))}
@@ -104,59 +104,69 @@ export default function ResultCheckerPage() {
         </div>
       )}
 
-      <form onSubmit={handleBuy} className="glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border border-slate-800">
+      <form onSubmit={handleBuy} className="bg-white p-6 sm:p-8 rounded-3xl space-y-6 border border-gray-200 shadow-sm">
         <div className="space-y-3">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-            1. Select Exam Type
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+            1. Select Examination Body
           </label>
           <div className="grid grid-cols-2 gap-3">
-            {examTypes.map((exam) => (
-              <button
-                key={exam.id}
-                type="button"
-                onClick={() => setSelectedExam(exam)}
-                className={`p-4 rounded-2xl border text-center font-bold transition text-sm flex flex-col items-center gap-1 ${
-                  selectedExam.id === exam.id
-                    ? 'bg-pink-500/10 border-pink-500 text-pink-400 shadow-lg'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300'
-                }`}
-              >
-                <span>{exam.name}</span>
-                <span className="text-xs text-slate-400 font-normal">₦{exam.price}</span>
-              </button>
-            ))}
+            {examTypes.map((exam) => {
+              const isSelected = selectedExam.id === exam.id;
+              return (
+                <button
+                  key={exam.id}
+                  type="button"
+                  onClick={() => setSelectedExam(exam)}
+                  className={`p-4 rounded-2xl border flex items-center gap-3 transition ${
+                    isSelected
+                      ? 'border-orange-500 bg-orange-50 text-blue-900 border-2 shadow-sm'
+                      : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl ${exam.color} flex items-center justify-center text-white font-bold text-xs shadow-sm`}>
+                    {exam.label}
+                  </div>
+                  <div className="text-left">
+                    <p className="font-bold text-sm text-blue-900">{exam.id}</p>
+                    <p className="text-xs font-extrabold text-orange-600">₦{exam.price.toLocaleString()}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-            2. Quantity
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+            2. Quantity of Pins
           </label>
-          <input
-            type="number"
-            min="1"
-            max="10"
+          <select
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            required
-            className="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-white font-bold text-base focus:outline-none focus:border-pink-500"
-          />
+            className="w-full px-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-base font-medium focus:outline-none focus:border-orange-500"
+          >
+            {[1, 2, 3, 4, 5, 10].map((num) => (
+              <option key={num} value={num}>
+                {num} {num === 1 ? 'Pin' : 'Pins'}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="pt-4 border-t border-slate-800/80 flex flex-col gap-4">
+        <div className="pt-4 border-t border-gray-100 space-y-4">
           <div className="flex justify-between items-center text-sm font-semibold">
-            <span className="text-slate-400">Total Price:</span>
-            <span className="text-2xl font-extrabold text-pink-400">
-              ₦{(selectedExam.price * (parseInt(quantity) || 1)).toLocaleString()}
+            <span className="text-gray-500">Total Price:</span>
+            <span className="text-2xl font-extrabold text-orange-600">
+              ₦{(selectedExam.price * parseInt(quantity)).toLocaleString()}
             </span>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-400 hover:to-rose-500 text-slate-950 font-bold text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-xl"
+            className="w-full py-4 rounded-xl btn-orange text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg"
           >
-            {loading ? 'Generating Pins...' : 'Purchase Pins Now'} <ArrowRight className="w-5 h-5" />
+            {loading ? 'Generating Pins...' : 'Confirm & Purchase Pins'} <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       </form>

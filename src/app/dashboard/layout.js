@@ -44,22 +44,20 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col md:flex-row selection:bg-orange-400 selection:text-white">
       {/* Mobile Top Nav */}
-      <div className="md:hidden bg-[#0a0f1d] border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-40">
+      <div className="md:hidden bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5">
-            <div className="w-full h-full bg-[#0b0914] rounded-[6px] flex items-center justify-center">
-              <Zap className="w-4 h-4 text-emerald-400 fill-emerald-400/20" />
-            </div>
+          <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shadow-md">
+            <Zap className="w-4 h-4 text-white fill-white/30" />
           </div>
           <span className="text-xl font-bold tracking-tight">
-            <span className="gradient-text-emerald">Soft</span>
-            <span className="text-white">Tap</span>
+            <span className="text-orange-500">Soft</span>
+            <span className="text-blue-900">Tap</span>
           </span>
         </Link>
 
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg bg-slate-900 text-slate-300 border border-slate-800"
+          className="p-2 rounded-lg bg-gray-100 text-gray-700 border border-gray-200"
         >
           {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
@@ -67,21 +65,19 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar Navigation */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-72 bg-[#0a0e1a] border-r border-slate-800/80 p-6 flex flex-col justify-between transition-transform duration-300 ${
+        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-72 bg-white border-r border-gray-200 p-6 flex flex-col justify-between transition-transform duration-300 shadow-sm ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="space-y-8">
           {/* Logo */}
           <Link href="/dashboard" className="flex items-center gap-2 px-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-400 p-0.5 shadow-lg shadow-emerald-500/20">
-              <div className="w-full h-full bg-[#0b0914] rounded-[10px] flex items-center justify-center">
-                <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
-              </div>
+            <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center shadow-md shadow-orange-200">
+              <Zap className="w-5 h-5 text-white fill-white/30" />
             </div>
             <span className="text-2xl font-extrabold tracking-tight">
-              <span className="gradient-text-emerald">Soft</span>
-              <span className="text-white">Tap</span>
+              <span className="text-orange-500">Soft</span>
+              <span className="text-blue-900">Tap</span>
             </span>
           </Link>
 
@@ -97,11 +93,11 @@ export default function DashboardLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm transition-all ${
                     isActive
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold shadow-md shadow-emerald-950/20'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                      ? 'bg-orange-50 text-orange-600 border border-orange-200 font-bold shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-orange-500' : 'text-gray-400'}`} />
                   {item.name}
                 </Link>
               );
@@ -110,22 +106,22 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* User Card & Logout */}
-        <div className="pt-4 border-t border-slate-800/80 space-y-3">
+        <div className="pt-4 border-t border-gray-200 space-y-3">
           {user && (
             <div className="flex items-center gap-3 px-2">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-sm">
+              <div className="w-10 h-10 rounded-full bg-orange-100 border border-orange-300 flex items-center justify-center text-orange-600 font-bold text-sm">
                 {user.firstName ? user.firstName[0] : 'U'}
               </div>
               <div className="truncate">
-                <p className="text-sm font-bold text-white truncate">{user.firstName} {user.lastName}</p>
-                <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                <p className="text-sm font-bold text-gray-900 truncate">{user.firstName} {user.lastName}</p>
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
               </div>
             </div>
           )}
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 font-semibold text-sm transition"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-semibold text-sm transition"
           >
             <LogOut className="w-5 h-5" />
             Logout
