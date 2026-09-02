@@ -272,60 +272,60 @@ export default function Home() {
       {/* ============================
           NETWORK LOGOS STRIP
           ============================ */}
-      <section className="py-10 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <p className="text-sm text-gray-500 font-semibold uppercase tracking-wide mb-6">We support all networks</p>
-          <div className="flex flex-wrap justify-center gap-8 items-center">
+      <section className="py-8 sm:py-10 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+          <p className="text-xs sm:text-sm text-gray-500 font-semibold uppercase tracking-wide mb-6">We support all networks &amp; billers</p>
+          <div className="grid grid-cols-4 sm:grid-cols-7 gap-3 sm:gap-4 md:gap-6 items-center justify-items-center">
             {/* MTN */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/mtn.jpg" alt="MTN" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">MTN</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">MTN</span>
             </div>
             {/* Airtel */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/airtel.jpg" alt="Airtel" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">Airtel</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">Airtel</span>
             </div>
             {/* Glo */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/glo.jpg" alt="Glo" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">Glo</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">Glo</span>
             </div>
             {/* 9mobile */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/9mobile.jpg" alt="9mobile" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">9mobile</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">9mobile</span>
             </div>
             {/* DStv */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/dstv.jpg" alt="DStv" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">DStv</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">DStv</span>
             </div>
             {/* GOtv */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-100">
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
                 <Image src="/logos/gotv.jpg" alt="GOtv" width={80} height={80} className="w-full h-full object-contain" />
               </div>
-              <span className="text-xs font-bold text-gray-600">GOtv</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">GOtv</span>
             </div>
-            {/* StarTimes — SVG inline */}
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-20 h-20 rounded-2xl flex items-center justify-center bg-red-600 shadow-md">
-                <svg viewBox="0 0 60 60" className="w-10 h-10">
+            {/* StarTimes */}
+            <div className="flex flex-col items-center gap-1.5 group col-span-2 sm:col-span-1">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center bg-red-600 shadow-sm hover:shadow-md transition-all">
+                <svg viewBox="0 0 60 60" className="w-8 h-8 sm:w-10 sm:h-10">
                   <polygon points="30,5 37,22 55,22 41,34 46,52 30,40 14,52 19,34 5,22 23,22" fill="gold" />
                 </svg>
               </div>
-              <span className="text-xs font-bold text-gray-600">StarTimes</span>
+              <span className="text-[11px] sm:text-xs font-bold text-gray-700">StarTimes</span>
             </div>
           </div>
         </div>
