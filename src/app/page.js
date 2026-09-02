@@ -122,58 +122,87 @@ export default function Home() {
           ============================ */}
       <section
         id="home"
-        className="relative flex flex-col items-start justify-center px-6 sm:px-12 md:px-16 min-h-screen text-white overflow-hidden pt-24"
+        className="relative min-h-[90vh] lg:min-h-screen flex items-center justify-center px-6 sm:px-10 lg:px-16 pt-28 pb-16 text-white overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, #0b1329 0%, #0f172a 40%, #1e293b 80%, #0f172a 100%)',
+        }}
       >
-        {/* Real Background Image with Laptop & Phone Mockup */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center -z-20 transform scale-105 transition-transform duration-1000"
-          style={{ backgroundImage: "url('/home-bg.jpg')" }}
-        />
-        
-        {/* High-contrast gradient overlay to ensure text is perfectly legible */}
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-950/90 via-gray-900/80 to-blue-950/60 -z-10" />
+        {/* Ambient background glows */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/15 rounded-full blur-[140px] pointer-events-none" />
 
-        {/* Ambient neon light glows */}
-        <div className="absolute top-1/4 right-10 w-96 h-96 bg-orange-500/20 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-10 left-10 w-96 h-96 bg-blue-600/20 rounded-full blur-[140px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center relative z-10">
+          {/* Left Column: Headings & Action Buttons */}
+          <div className="lg:col-span-7 space-y-5 text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs sm:text-sm font-semibold tracking-wide shadow-sm">
+              <Zap className="w-4 h-4 text-orange-400" /> Welcome To SoftTap!
+            </div>
+            
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] text-white tracking-tight">
+              DATA, TV <br className="hidden sm:block" />
+              SUBSCRIPTION, <br className="hidden sm:block" />
+              ELECTRICITY BILLS, <br className="hidden sm:block" />
+              EXAMS/RESULT <br className="hidden sm:block" />
+              <span className="text-orange-400">CHECKER PINS!!</span>
+            </h1>
 
-        <div className="relative z-10 max-w-3xl space-y-2">
-          <p className="text-base sm:text-lg md:text-xl font-medium text-orange-400 mb-2 animate-fade-slide-up">
-            Welcome To SoftTap!
-          </p>
-          
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white animate-fade-slide-up delay-100">
-            DATA, TV<br />
-            SUBSCRIPTION,<br />
-            ELECTRICITY BILLS,<br />
-            EXAMS/RESULT<br />
-            <span className="text-orange-400">CHECKER PINS!!</span>
-          </h1>
+            <p className="text-gray-300 font-medium text-base sm:text-lg max-w-xl">
+              All Your Bills, One Tap Away. Instant automated delivery for mobile data, airtime, cable TV, electricity tokens, and exam result checker pins.
+            </p>
 
-          <p className="text-gray-200 font-semibold text-base sm:text-lg pt-2 pb-4 animate-fade-slide-up delay-200">
-            All Your Bills, One Tap Away.
-          </p>
+            <div className="flex flex-row flex-wrap gap-4 pt-2">
+              <Link href="/login">
+                <button className="btn-white-glass shadow-lg hover:bg-orange-500 hover:border-orange-500">
+                  <LogIn className="w-5 h-5" />
+                  Login
+                </button>
+              </Link>
+              <Link href="/register">
+                <button className="btn-orange-solid shadow-lg bg-orange-500 hover:bg-orange-600">
+                  <UserPlus className="w-5 h-5" />
+                  Register
+                </button>
+              </Link>
+            </div>
 
-          <div className="flex flex-row gap-4 pt-2 animate-fade-slide-up delay-300">
-            <Link href="/login">
-              <button className="btn-white-glass shadow-lg">
-                <LogIn className="w-5 h-5" />
-                Login
-              </button>
-            </Link>
-            <Link href="/register">
-              <button className="btn-orange-solid shadow-lg">
-                <UserPlus className="w-5 h-5" />
-                Register
-              </button>
-            </Link>
+            {/* Quick Badges */}
+            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-300">
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
+                <CheckCircle2 className="w-4 h-4 text-green-400" /> Instant Auto-Delivery
+              </span>
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
+                <Shield className="w-4 h-4 text-blue-400" /> 100% Secure Payment
+              </span>
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
+                <Zap className="w-4 h-4 text-orange-400" /> Wholesale Rates
+              </span>
+            </div>
+          </div>
+
+          {/* Right Column: Phone & Laptop Visual Mockup */}
+          <div className="lg:col-span-5 flex justify-center items-center relative">
+            {/* Glowing Backdrop Frame */}
+            <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/30 to-blue-600/30 rounded-3xl blur-2xl opacity-75" />
+            
+            <div className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-slate-900/80 backdrop-blur-sm group hover:border-orange-500/40 transition-all duration-500">
+              <Image
+                src="/hero-mockup.jpg"
+                alt="SoftTap - Instant Data, Cable TV & Electricity Bill Payment on Laptop & Smartphone"
+                width={800}
+                height={500}
+                priority
+                className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
+              />
+              {/* Subtle bottom gradient on image */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
+            </div>
           </div>
         </div>
 
         {/* Scroll cue */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60 animate-bounce">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60 animate-bounce pointer-events-none">
           <span className="text-xs text-white">Scroll</span>
-          <ChevronDown className="w-5 h-5 text-white" />
+          <ChevronDown className="w-4 h-4 text-white" />
         </div>
       </section>
 
