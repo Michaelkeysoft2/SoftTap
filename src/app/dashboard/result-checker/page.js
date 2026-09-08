@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { BookOpen, Copy, Check, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
 
 const examTypes = [
-  { id: 'WAEC', name: 'WAEC Result Checker', price: 3320, color: 'bg-blue-900', label: 'WAEC' },
-  { id: 'NECO', name: 'NECO Result Token', price: 1170, color: 'bg-green-700', label: 'NECO' },
-  { id: 'NABTEB', name: 'NABTEB Result Checker', price: 850, color: 'bg-red-700', label: 'NABTEB' },
-  { id: 'NBAIS', name: 'NBAIS e-Pin', price: 920, color: 'bg-purple-700', label: 'NBAIS' },
+  { id: 'WAEC', name: 'WAEC Result Checker', price: 3320, logo: '/logos/waec.svg', label: 'WAEC' },
+  { id: 'NECO', name: 'NECO Result Token', price: 1170, logo: '/logos/neco.svg', label: 'NECO' },
+  { id: 'NABTEB', name: 'NABTEB Result Checker', price: 850, logo: '/logos/nabteb.svg', label: 'NABTEB' },
+  { id: 'NBAIS', name: 'NBAIS e-Pin', price: 920, logo: '/logos/nbais.svg', label: 'NBAIS' },
 ];
 
 export default function ResultCheckerPage() {
@@ -123,8 +124,8 @@ export default function ResultCheckerPage() {
                       : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <div className={`w-10 h-10 rounded-xl ${exam.color} flex items-center justify-center text-white font-bold text-xs shadow-sm`}>
-                    {exam.label}
+                  <div className="w-11 h-11 rounded-xl bg-white border border-gray-200 p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                    <Image src={exam.logo} alt={exam.name} width={40} height={40} className="w-full h-full object-contain" />
                   </div>
                   <div className="text-left">
                     <p className="font-bold text-sm text-blue-900">{exam.id}</p>

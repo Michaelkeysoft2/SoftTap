@@ -34,7 +34,7 @@ const tvProviders = [
   { 
     id: 'STARTIMES', 
     name: 'StarTimes', 
-    logo: null,
+    logo: '/logos/startimes.svg',
     plans: [
       { name: 'Nova Bouquet', price: 1700 }, 
       { name: 'Basic Bouquet', price: 3300 }, 

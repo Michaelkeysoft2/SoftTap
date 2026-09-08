@@ -1,0 +1,34 @@
+﻿<svg xmlns=http://www.w3.org/2000/svg viewBox=0 0 200 200 width=100% height=100%>
+  <defs>
+    <linearGradient id=stBg x1=0% y1=0% x2=100% y2=100%>
+      <stop offset=0% stop-color=#E53935/>
+      <stop offset=100% stop-color=#C62828/>
+    </linearGradient>
+    <linearGradient id=starGold1 x1=0% y1=0% x2=100% y2=100%>
+      <stop offset=0% stop-color=#FFF176/>
+      <stop offset=50% stop-color=#FBC02D/>
+      <stop offset=100% stop-color=#F57F17/>
+    </linearGradient>
+    <linearGradient id=starGold2 x1=100% y1=0% x2=0% y2=100%>
+      <stop offset=0% stop-color=#FFF9C4/>
+      <stop offset=100% stop-color=#F9A825/>
+    </linearGradient>
+    <filter id=dropShadow x=-10% y=-10% width=130% height=130%>
+      <feDropShadow dx=2 dy=4 stdDeviation=4 flood-opacity=0.3/>
+    </filter>
+  </defs>
+  <rect width=200 height=200 rx=36 fill=url(#stBg)/>
+  <g transform=translate(100, 84) filter=url(#dropShadow)>
+    <polygon points=0,0 0,-56 16,-16 fill=url(#starGold1)/>
+    <polygon points=0,0 0,-56 -16,-16 fill=url(#starGold2)/>
+    <polygon points=0,0 52,-18 16,-16 fill=url(#starGold2)/>
+    <polygon points=0,0 52,-18 25,14 fill=url(#starGold1)/>
+    <polygon points=0,0 32,45 25,14 fill=url(#starGold2)/>
+    <polygon points=0,0 32,45 0,20 fill=url(#starGold1)/>
+    <polygon points=0,0 -32,45 0,20 fill=url(#starGold2)/>
+    <polygon points=0,0 -32,45 -25,14 fill=url(#starGold1)/>
+    <polygon points=0,0 -52,-18 -25,14 fill=url(#starGold2)/>
+    <polygon points=0,0 -52,-18 -16,-16 fill=url(#starGold1)/>
+  </g>
+  <text x=100 y=168 text-anchor=middle fill=#FFFFFF font-family=system-ui, -apple-system, sans-serif font-weight=900 font-size=24 letter-spacing=1>StarTimes</text>
+</svg>

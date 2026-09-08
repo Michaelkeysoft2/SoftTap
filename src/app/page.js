@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FAQAccordion from '@/components/FAQAccordion';
+import QuickPurchaseModal from '@/components/QuickPurchaseModal';
 import { useState } from 'react';
 import {
   Wifi, Tv, Lightbulb, Signal, LogIn, UserPlus,
@@ -13,18 +14,14 @@ import {
 } from 'lucide-react';
 
 /* =============================================
-   INLINE SVG LOGOS for exam bodies + electricity
+   EXAM BODY LOGO BADGES – real SVG logos
    ============================================= */
 
 function WaecBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl gap-2">
-      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-        <svg viewBox="0 0 100 100" className="w-12 h-12">
-          <circle cx="50" cy="50" r="45" fill="#1e3a8a" />
-          <text x="50" y="45" textAnchor="middle" fill="gold" fontSize="18" fontWeight="bold" fontFamily="serif">W</text>
-          <text x="50" y="65" textAnchor="middle" fill="gold" fontSize="10" fontFamily="serif">WAEC</text>
-        </svg>
+    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl gap-3">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
+        <Image src="/logos/waec.svg" alt="WAEC" width={72} height={72} className="w-full h-full object-contain" />
       </div>
       <span className="text-white font-bold text-sm tracking-wide">W A E C</span>
     </div>
@@ -33,13 +30,9 @@ function WaecBadge() {
 
 function NecoBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-green-800 to-green-600 rounded-xl gap-2">
-      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-        <svg viewBox="0 0 100 100" className="w-12 h-12">
-          <circle cx="50" cy="50" r="45" fill="#166534" />
-          <text x="50" y="45" textAnchor="middle" fill="gold" fontSize="18" fontWeight="bold" fontFamily="serif">N</text>
-          <text x="50" y="65" textAnchor="middle" fill="gold" fontSize="10" fontFamily="serif">NECO</text>
-        </svg>
+    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-green-800 to-green-600 rounded-xl gap-3">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
+        <Image src="/logos/neco.svg" alt="NECO" width={72} height={72} className="w-full h-full object-contain" />
       </div>
       <span className="text-white font-bold text-sm tracking-wide">N E C O</span>
     </div>
@@ -48,13 +41,9 @@ function NecoBadge() {
 
 function NabtebBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-red-800 to-red-600 rounded-xl gap-2">
-      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-        <svg viewBox="0 0 100 100" className="w-12 h-12">
-          <circle cx="50" cy="50" r="45" fill="#991b1b" />
-          <text x="50" y="42" textAnchor="middle" fill="gold" fontSize="13" fontWeight="bold" fontFamily="serif">NAB</text>
-          <text x="50" y="60" textAnchor="middle" fill="gold" fontSize="13" fontWeight="bold" fontFamily="serif">TEB</text>
-        </svg>
+    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-red-800 to-red-600 rounded-xl gap-3">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
+        <Image src="/logos/nabteb.svg" alt="NABTEB" width={72} height={72} className="w-full h-full object-contain" />
       </div>
       <span className="text-white font-bold text-sm tracking-wide">N A B T E B</span>
     </div>
@@ -63,20 +52,15 @@ function NabtebBadge() {
 
 function NbaisBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-purple-800 to-purple-600 rounded-xl gap-2">
-      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-        <svg viewBox="0 0 100 100" className="w-12 h-12">
-          <circle cx="50" cy="50" r="45" fill="#6b21a8" />
-          <text x="50" y="42" textAnchor="middle" fill="gold" fontSize="13" fontWeight="bold" fontFamily="serif">NBA</text>
-          <text x="50" y="62" textAnchor="middle" fill="gold" fontSize="13" fontWeight="bold" fontFamily="serif">IS</text>
-        </svg>
+    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-purple-800 to-purple-600 rounded-xl gap-3">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
+        <Image src="/logos/nbais.svg" alt="NBAIS" width={72} height={72} className="w-full h-full object-contain" />
       </div>
       <span className="text-white font-bold text-sm tracking-wide">N B A I S</span>
     </div>
   );
 }
 
-/* Network logo badges using uploaded images */
 function NetworkLogo({ src, alt, color }) {
   return (
     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${color} shadow-md overflow-hidden`}>
@@ -89,6 +73,13 @@ function NetworkLogo({ src, alt, color }) {
 
 export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false);
+  const [quickBuyTab, setQuickBuyTab] = useState('data');
+
+  const openQuickBuy = (tab) => {
+    setQuickBuyTab(tab);
+    setIsQuickBuyOpen(true);
+  };
 
   const faqs = [
     {
@@ -150,17 +141,24 @@ export default function Home() {
               All Your Bills, One Tap Away. Instant automated delivery for mobile data, airtime, cable TV, electricity tokens, and exam result checker pins.
             </p>
 
-            <div className="flex flex-row flex-wrap gap-4 pt-2">
-              <Link href="/login">
-                <button className="btn-white-glass shadow-lg hover:bg-orange-500 hover:border-orange-500">
-                  <LogIn className="w-5 h-5" />
-                  Login
+            <div className="flex flex-row flex-wrap gap-3 pt-2">
+              <button
+                onClick={() => openQuickBuy('data')}
+                className="btn-orange-solid shadow-xl bg-orange-500 hover:bg-orange-600 font-extrabold flex items-center gap-2 px-6 py-3.5 text-base border-2 border-orange-400"
+              >
+                <Zap className="w-5 h-5 fill-white" />
+                ⚡ Buy Instantly (No Account Needed)
+              </button>
+              <Link href="/register">
+                <button className="btn-white-glass shadow-lg hover:bg-white/20">
+                  <UserPlus className="w-5 h-5" />
+                  Create Free Account
                 </button>
               </Link>
-              <Link href="/register">
-                <button className="btn-orange-solid shadow-lg bg-orange-500 hover:bg-orange-600">
-                  <UserPlus className="w-5 h-5" />
-                  Register
+              <Link href="/login">
+                <button className="btn-white-glass shadow-lg hover:bg-white/20">
+                  <LogIn className="w-5 h-5" />
+                  Login
                 </button>
               </Link>
             </div>
@@ -225,9 +223,7 @@ export default function Home() {
               </div>
               <h4 className="text-lg font-bold text-blue-900">Data</h4>
               <p className="text-gray-600 text-sm">Swiftly purchase Data for all networks @cheap rates with instant delivery.</p>
-              <Link href="/login" className="mt-auto w-full">
-                <button className="btn-orange w-full">Buy Now</button>
-              </Link>
+              <button onClick={() => openQuickBuy('data')} className="btn-orange w-full mt-auto">Buy Now</button>
             </div>
 
             {/* TV */}
@@ -237,9 +233,7 @@ export default function Home() {
               </div>
               <h4 className="text-lg font-bold text-blue-900">TV Subscription</h4>
               <p className="text-gray-600 text-sm">Stay connected! Subscribe and Renew your TV subscription instantly.</p>
-              <Link href="/login" className="mt-auto w-full">
-                <button className="btn-orange w-full">Subscribe</button>
-              </Link>
+              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full mt-auto">Subscribe</button>
             </div>
 
             {/* Electricity */}
@@ -249,9 +243,7 @@ export default function Home() {
               </div>
               <h4 className="text-lg font-bold text-blue-900">Electricity Bills</h4>
               <p className="text-gray-600 text-sm">Purchase prepaid meter tokens instantly and Pay estimated bill.</p>
-              <Link href="/login" className="mt-auto w-full">
-                <button className="btn-orange w-full">Pay</button>
-              </Link>
+              <button onClick={() => openQuickBuy('electricity')} className="btn-orange w-full mt-auto">Pay</button>
             </div>
 
             {/* Airtime */}
@@ -261,11 +253,10 @@ export default function Home() {
               </div>
               <h4 className="text-lg font-bold text-blue-900">Airtime</h4>
               <p className="text-gray-600 text-sm">Never run low on Airtime, purchase instantly for all networks.</p>
-              <Link href="/login" className="mt-auto w-full">
-                <button className="btn-orange w-full">Buy Now</button>
-              </Link>
+              <button onClick={() => openQuickBuy('airtime')} className="btn-orange w-full mt-auto">Buy Now</button>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -320,13 +311,12 @@ export default function Home() {
             </div>
             {/* StarTimes */}
             <div className="flex flex-col items-center gap-1.5 group col-span-2 sm:col-span-1">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl flex items-center justify-center bg-red-600 shadow-sm hover:shadow-md transition-all">
-                <svg viewBox="0 0 60 60" className="w-8 h-8 sm:w-10 sm:h-10">
-                  <polygon points="30,5 37,22 55,22 41,34 46,52 30,40 14,52 19,34 5,22 23,22" fill="gold" />
-                </svg>
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-gray-200 bg-white p-1 transition-all">
+                <Image src="/logos/startimes.svg" alt="StarTimes" width={80} height={80} className="w-full h-full object-contain" />
               </div>
               <span className="text-[11px] sm:text-xs font-bold text-gray-700">StarTimes</span>
             </div>
+
           </div>
         </div>
       </section>
@@ -351,9 +341,7 @@ export default function Home() {
               <WaecBadge />
               <h4 className="text-base sm:text-lg font-bold text-blue-900">WAEC Result Checker</h4>
               <p className="text-gray-500 text-xs">(Pin &amp; Serial No.)</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Buy Now @ ₦3,320</button>
-              </Link>
+              <button onClick={() => openQuickBuy('exam_pin')} className="btn-orange w-full">Buy Now @ ₦3,320</button>
             </div>
 
             {/* NECO */}
@@ -361,9 +349,7 @@ export default function Home() {
               <NecoBadge />
               <h4 className="text-base sm:text-lg font-bold text-blue-900">NECO Result Checker</h4>
               <p className="text-gray-500 text-xs">(Token)</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Buy Now @ ₦1,170</button>
-              </Link>
+              <button onClick={() => openQuickBuy('exam_pin')} className="btn-orange w-full">Buy Now @ ₦1,170</button>
             </div>
 
             {/* NABTEB */}
@@ -371,9 +357,7 @@ export default function Home() {
               <NabtebBadge />
               <h4 className="text-base sm:text-lg font-bold text-blue-900">NABTEB Result Checker</h4>
               <p className="text-gray-500 text-xs">(Pin &amp; Serial No.)</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Buy Now @ ₦850</button>
-              </Link>
+              <button onClick={() => openQuickBuy('exam_pin')} className="btn-orange w-full">Buy Now @ ₦850</button>
             </div>
 
             {/* NBAIS */}
@@ -381,11 +365,10 @@ export default function Home() {
               <NbaisBadge />
               <h4 className="text-base sm:text-lg font-bold text-blue-900">NBAIS Result Checker</h4>
               <p className="text-gray-500 text-xs">(e-Pin)</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Buy Now @ ₦920</button>
-              </Link>
+              <button onClick={() => openQuickBuy('exam_pin')} className="btn-orange w-full">Buy Now @ ₦920</button>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -401,21 +384,23 @@ export default function Home() {
 
           <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { name: 'IBEDC', color: 'bg-green-600', short: 'IBE' },
-              { name: 'EKEDC', color: 'bg-blue-700', short: 'EKE' },
-              { name: 'AEDC', color: 'bg-red-600', short: 'AED' },
-              { name: 'EEDC', color: 'bg-orange-600', short: 'EED' },
-              { name: 'PHED', color: 'bg-teal-600', short: 'PHE' },
-              { name: 'KEDCO', color: 'bg-purple-700', short: 'KED' },
+              { name: 'IBEDC', logo: '/logos/ibedc.svg', label: 'Ibadan Electric' },
+              { name: 'EKEDC', logo: '/logos/ekedc.svg', label: 'Eko Electric' },
+              { name: 'AEDC',  logo: '/logos/aedc.svg',  label: 'Abuja Electric' },
+              { name: 'EEDC',  logo: '/logos/eedc.svg',  label: 'Enugu Electric' },
+              { name: 'PHED',  logo: '/logos/phed.svg',  label: 'Port Harcourt' },
+              { name: 'KEDCO', logo: '/logos/kedco.svg', label: 'Kano Electric' },
             ].map((disco) => (
-              <Link href="/login" key={disco.name}>
-                <div className="brand-card p-4 flex flex-col items-center gap-3 cursor-pointer hover:border-orange-300">
-                  <div className={`w-14 h-14 ${disco.color} rounded-xl flex items-center justify-center shadow-md`}>
-                    <Lightbulb className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="text-sm font-bold text-blue-900">{disco.name}</span>
+              <button
+                key={disco.name}
+                onClick={() => openQuickBuy('electricity')}
+                className="brand-card p-4 flex flex-col items-center gap-3 cursor-pointer hover:border-orange-300 w-full"
+              >
+                <div className="w-14 h-14 rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm flex items-center justify-center p-1">
+                  <Image src={disco.logo} alt={disco.name} width={56} height={56} className="w-full h-full object-contain" />
                 </div>
-              </Link>
+                <span className="text-sm font-bold text-blue-900">{disco.name}</span>
+              </button>
             ))}
           </div>
         </div>
@@ -437,9 +422,7 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-blue-900 text-lg">DStv</h4>
               <p className="text-gray-500 text-sm">All bouquets — Compact, Compact+, Premium</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Subscribe</button>
-              </Link>
+              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
             </div>
 
             <div className="brand-card p-6 flex flex-col items-center gap-4">
@@ -448,24 +431,19 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-blue-900 text-lg">GOtv</h4>
               <p className="text-gray-500 text-sm">GOtv Lite, Value, Plus, Max</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Subscribe</button>
-              </Link>
+              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
             </div>
 
             <div className="brand-card p-6 flex flex-col items-center gap-4">
-              <div className="w-24 h-24 rounded-2xl bg-red-600 flex items-center justify-center shadow">
-                <svg viewBox="0 0 60 60" className="w-12 h-12">
-                  <polygon points="30,5 37,22 55,22 41,34 46,52 30,40 14,52 19,34 5,22 23,22" fill="gold" />
-                </svg>
+              <div className="w-24 h-24 rounded-2xl overflow-hidden shadow border border-gray-100 bg-white p-1">
+                <Image src="/logos/startimes.svg" alt="StarTimes" width={96} height={96} className="w-full h-full object-contain" />
               </div>
               <h4 className="font-bold text-blue-900 text-lg">StarTimes</h4>
               <p className="text-gray-500 text-sm">Nova, Basic, Smart, Classic, Super</p>
-              <Link href="/login" className="w-full">
-                <button className="btn-orange w-full">Subscribe</button>
-              </Link>
+              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -483,6 +461,7 @@ export default function Home() {
             <PriceCard
               title="MTN SME Data"
               dot="bg-yellow-400"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '500MB (SME)', price: '₦485', dur: '7days' },
@@ -499,6 +478,7 @@ export default function Home() {
             <PriceCard
               title="MTN CG Lite Data (SME 2.0)"
               dot="bg-yellow-400"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '50MB (CG_LITE)', price: '₦19', dur: '30days' },
@@ -516,6 +496,7 @@ export default function Home() {
             <PriceCard
               title="MTN CG Data"
               dot="bg-yellow-400"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '500MB (CG)', price: '₦360', dur: '7days' },
@@ -529,6 +510,7 @@ export default function Home() {
             <PriceCard
               title="AIRTEL Corporate Gifting"
               dot="bg-red-500"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/airtel.jpg" alt="Airtel" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '500MB (CG)', price: '₦487', dur: '7days' },
@@ -545,6 +527,7 @@ export default function Home() {
             <PriceCard
               title="GLO Corporate Gifting Data"
               dot="bg-green-500"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/glo.jpg" alt="Glo" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '200MB (CG)', price: '₦83', dur: '14days' },
@@ -559,6 +542,7 @@ export default function Home() {
             <PriceCard
               title="9mobile SME Data"
               dot="bg-teal-400"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/9mobile.jpg" alt="9mobile" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '500MB (SME)', price: '₦180', dur: '30days' },
@@ -571,6 +555,7 @@ export default function Home() {
             <PriceCard
               title="Airtel Direct Gifting"
               dot="bg-red-500"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/airtel.jpg" alt="Airtel" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '150MB (Awoof)', price: '₦55', dur: '1day' },
@@ -585,6 +570,7 @@ export default function Home() {
             <PriceCard
               title="MTN Direct Gifting"
               dot="bg-yellow-400"
+              onBuy={() => openQuickBuy('data')}
               logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
               items={[
                 { size: '1GB (Awoof)', price: '₦485', dur: '1day' },
@@ -599,6 +585,7 @@ export default function Home() {
             <PriceCard
               title="Result Checker Pins"
               dot="bg-blue-500"
+              onBuy={() => openQuickBuy('exam_pin')}
               logo={<BookOpen className="w-6 h-6 text-blue-700" />}
               items={[
                 { size: 'WAEC', price: '₦3,300' },
@@ -809,12 +796,19 @@ export default function Home() {
       </section>
 
       <Footer />
+
+      {/* ===== QUICK PURCHASE MODAL ===== */}
+      <QuickPurchaseModal
+        isOpen={isQuickBuyOpen}
+        onClose={() => setIsQuickBuyOpen(false)}
+        initialTab={quickBuyTab}
+      />
     </div>
   );
 }
 
 /* ======= PRICE CARD COMPONENT ======= */
-function PriceCard({ title, dot, logo, items }) {
+function PriceCard({ title, dot, logo, items, onBuy }) {
   return (
     <div className="brand-card p-6 flex flex-col justify-between">
       <div>
@@ -832,9 +826,10 @@ function PriceCard({ title, dot, logo, items }) {
           ))}
         </ul>
       </div>
-      <Link href="/login" className="block mt-4">
-        <button className="btn-orange w-full">Buy Now</button>
-      </Link>
+      <button onClick={onBuy} className="btn-orange w-full mt-4">
+        Buy Now
+      </button>
     </div>
   );
 }
+

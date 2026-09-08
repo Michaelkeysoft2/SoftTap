@@ -1,4 +1,5 @@
-import mongoose from 'mongoose';
+﻿import mongoose from 'mongoose';
+import { LocalUser } from '@/lib/local-store';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -22,4 +23,18 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.User || mongoose.model('User', UserSchema);
+const MongooseUser = mongoose.models.User || mongoose.model('User', UserSchema);
+
+const User = new Proxy(MongooseUser, {
+  get(target, prop, receiver) {
+    if (global.isLocalDb || mongoose.connection.readyState !== 1) {
+      if (prop in LocalUser) {
+        return LocalUser[prop];
+      }
+    }
+    const val = Reflect.get(target, prop, receiver);
+    return typeof val === 'function' ? val.bind(target) : val;
+  },
+});
+
+export default User;

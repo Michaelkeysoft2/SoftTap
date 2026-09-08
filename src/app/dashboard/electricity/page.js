@@ -1,17 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Lightbulb, Zap, ArrowRight, ShieldCheck, AlertCircle, Copy, Check } from 'lucide-react';
 
 const discos = [
-  { id: 'IKEDC', name: 'Ikeja Electric (IKEDC)', color: 'bg-yellow-500' },
-  { id: 'EKEDC', name: 'Eko Electric (EKEDC)', color: 'bg-blue-600' },
-  { id: 'AEDC', name: 'Abuja Electric (AEDC)', color: 'bg-red-600' },
-  { id: 'IBEDC', name: 'Ibadan Electric (IBEDC)', color: 'bg-green-600' },
-  { id: 'KEDCO', name: 'Kano Electric (KEDCO)', color: 'bg-purple-600' },
-  { id: 'PHED', name: 'Port Harcourt (PHED)', color: 'bg-teal-600' },
-  { id: 'JED', name: 'Jos Electric (JED)', color: 'bg-indigo-600' },
-  { id: 'KAEDCO', name: 'Kaduna Electric (KAEDCO)', color: 'bg-orange-600' },
+  { id: 'IKEDC', name: 'Ikeja Electric (IKEDC)', logo: '/logos/ikedc.svg' },
+  { id: 'EKEDC', name: 'Eko Electric (EKEDC)', logo: '/logos/ekedc.svg' },
+  { id: 'AEDC', name: 'Abuja Electric (AEDC)', logo: '/logos/aedc.svg' },
+  { id: 'IBEDC', name: 'Ibadan Electric (IBEDC)', logo: '/logos/ibedc.svg' },
+  { id: 'KEDCO', name: 'Kano Electric (KEDCO)', logo: '/logos/kedco.svg' },
+  { id: 'PHED', name: 'Port Harcourt (PHED)', logo: '/logos/phed.svg' },
+  { id: 'JED', name: 'Jos Electric (JED)', logo: '/logos/jed.svg' },
+  { id: 'KAEDCO', name: 'Kaduna Electric (KAEDCO)', logo: '/logos/kaedco.svg' },
 ];
 
 export default function ElectricityPage() {
@@ -153,8 +154,8 @@ export default function ElectricityPage() {
                       : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-lg ${d.color} flex items-center justify-center text-white shadow-sm`}>
-                    <Zap className="w-4 h-4" />
+                  <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 p-1 flex items-center justify-center shadow-sm overflow-hidden shrink-0">
+                    <Image src={d.logo} alt={d.name} width={36} height={36} className="w-full h-full object-contain" />
                   </div>
                   <span className="truncate w-full text-center">{d.id}</span>
                 </button>

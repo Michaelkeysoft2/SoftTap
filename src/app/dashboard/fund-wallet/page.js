@@ -57,7 +57,7 @@ export default function FundWalletPage() {
   };
 
   const handleCopyBank = () => {
-    navigator.clipboard.writeText('8039579410');
+    navigator.clipboard.writeText('0082747029');
     setCopiedBank(true);
     setTimeout(() => setCopiedBank(false), 2000);
   };
@@ -69,7 +69,7 @@ export default function FundWalletPage() {
           <Wallet className="w-8 h-8 text-orange-500" /> Fund Your Wallet
         </h1>
         <p className="text-gray-500 text-sm mt-1">
-          Choose online card payment or instant bank transfer to credit your wallet 24/7.
+          Choose instant online card/USSD payment or direct bank transfer to credit your wallet 24/7.
         </p>
       </div>
 
@@ -86,27 +86,27 @@ export default function FundWalletPage() {
         </div>
       )}
 
-      {/* Option 1: Automated Bank Transfer Virtual Account */}
+      {/* Option 1: Direct Bank Transfer */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-blue-200 shadow-sm space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
             <Landmark className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-extrabold text-blue-900">Automated Bank Transfer (Instant Auto-Credit)</h2>
-            <p className="text-xs text-gray-500">Transfer any amount to this bank account and your wallet will be credited automatically within seconds.</p>
+            <h2 className="text-lg font-extrabold text-blue-900">Direct Bank Transfer</h2>
+            <p className="text-xs text-gray-500">Transfer directly to our official business account below from any banking app.</p>
           </div>
         </div>
 
         <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 space-y-3">
           <div className="flex justify-between items-center text-sm border-b border-gray-200 pb-2">
             <span className="text-gray-500">Bank Name</span>
-            <span className="font-bold text-blue-900">Opay / Moniepoint</span>
+            <span className="font-bold text-blue-900">Stanbic Bank (Stanbic IBTC)</span>
           </div>
           <div className="flex justify-between items-center text-sm border-b border-gray-200 pb-2">
             <span className="text-gray-500">Account Number</span>
             <div className="flex items-center gap-2">
-              <span className="font-mono font-black text-orange-600 text-base">8039579410</span>
+              <span className="font-mono font-black text-orange-600 text-lg tracking-wider">0082747029</span>
               <button
                 onClick={handleCopyBank}
                 className="p-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:text-orange-500 transition shadow-sm"
@@ -116,9 +116,15 @@ export default function FundWalletPage() {
               </button>
             </div>
           </div>
-          <div className="flex justify-between items-center text-sm">
+          <div className="flex justify-between items-center text-sm border-b border-gray-200 pb-2">
             <span className="text-gray-500">Account Name</span>
-            <span className="font-bold text-blue-900">SoftTap / Michael Olayiwola</span>
+            <span className="font-bold text-blue-900">Michaelkeysoft Enterprises</span>
+          </div>
+          <div className="flex justify-between items-center text-xs text-gray-500 pt-1">
+            <span>Payment Proof &amp; Support:</span>
+            <a href="https://wa.me/2348039579410" target="_blank" rel="noopener noreferrer" className="font-bold text-orange-600 hover:underline">
+              WhatsApp 08039579410
+            </a>
           </div>
         </div>
       </div>
