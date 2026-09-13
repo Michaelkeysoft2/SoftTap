@@ -1,34 +1,51 @@
-﻿<svg xmlns=http://www.w3.org/2000/svg viewBox=0 0 200 200 width=100% height=100%>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
   <defs>
-    <linearGradient id=waecBg x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#0D256B/>
-      <stop offset=100% stop-color=#07153B/>
+    <linearGradient id="waecBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2B66"/>
+      <stop offset="100%" stop-color="#08183D"/>
     </linearGradient>
-    <linearGradient id=goldGrad x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#FFE082/>
-      <stop offset=50% stop-color=#FFB300/>
-      <stop offset=100% stop-color=#FF8F00/>
+    <linearGradient id="waecGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3B0"/>
+      <stop offset="40%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#D97706"/>
     </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.25"/>
+    </filter>
   </defs>
-  <rect width=200 height=200 rx=36 fill=url(#waecBg)/>
-  <!-- Gold outer ring -->
-  <circle cx=100 cy=90 r=62 fill=none stroke=url(#goldGrad) stroke-width=4/>
-  <circle cx=100 cy=90 r=54 fill=#0A1D54 stroke=url(#goldGrad) stroke-width=1.5/>
-  <!-- Sunburst Rays -->
-  <g stroke=url(#goldGrad) stroke-width=2 stroke-linecap=round opacity=0.8>
-    <line x1=100 y1=46 x2=100 y2=40/>
-    <line x1=131 y1=59 x2=136 y2=54/>
-    <line x1=144 y1=90 x2=150 y2=90/>
-    <line x1=131 y1=121 x2=136 y2=126/>
-    <line x1=100 y1=134 x2=100 y2=140/>
-    <line x1=69 y1=121 x2=64 y2=126/>
-    <line x1=56 y1=90 x2=50 y2=90/>
-    <line x1=69 y1=59 x2=64 y2=54/>
+
+  <!-- Card Background -->
+  <rect width="200" height="200" rx="32" fill="url(#waecBg)"/>
+
+  <!-- Golden Outer Ring -->
+  <circle cx="100" cy="85" r="56" fill="none" stroke="url(#waecGold)" stroke-width="3"/>
+  <circle cx="100" cy="85" r="51" fill="#0A1E4A" stroke="url(#waecGold)" stroke-width="1.2" opacity="0.9"/>
+
+  <!-- Sun Rays (Sunburst) -->
+  <g stroke="url(#waecGold)" stroke-width="2" stroke-linecap="round" opacity="0.85">
+    <line x1="100" y1="36" x2="100" y2="43"/>
+    <line x1="135" y1="50" x2="130" y2="55"/>
+    <line x1="149" y1="85" x2="142" y2="85"/>
+    <line x1="135" y1="120" x2="130" y2="115"/>
+    <line x1="100" y1="134" x2="100" y2="127"/>
+    <line x1="65" y1="120" x2="70" y2="115"/>
+    <line x1="51" y1="85" x2="58" y2="85"/>
+    <line x1="65" y1="50" x2="70" y2="55"/>
   </g>
-  <!-- Book / Crest Emblem -->
-  <path d=M78,85 Q100,75 100,82 Q100,75 122,85 L122,106 Q100,96 100,103 Q100,96 78,106 Z fill=url(#goldGrad)/>
-  <circle cx=100 cy=68 r=8 fill=url(#goldGrad)/>
-  <!-- Banner Ribbon -->
-  <rect x=35 y=148 width=130 height=34 rx=8 fill=url(#goldGrad)/>
-  <text x=100 y=171 text-anchor=middle fill=#07153B font-family=system-ui, -apple-system, serif font-weight=900 font-size=20 letter-spacing=3>WAEC</text>
+
+  <!-- WAEC Sun & Torch Emblem -->
+  <circle cx="100" cy="67" r="9" fill="url(#waecGold)" filter="url(#shadow)"/>
+  
+  <!-- Open Book of Learning -->
+  <path d="M74,86 C86,76 96,80 100,85 C104,80 114,76 126,86 L126,108 C114,98 104,102 100,107 C96,102 86,98 74,108 Z" 
+        fill="url(#waecGold)" filter="url(#shadow)"/>
+  <line x1="100" y1="85" x2="100" y2="107" stroke="#08183D" stroke-width="2"/>
+
+  <!-- Subtitle Tag -->
+  <text x="100" y="124" text-anchor="middle" fill="#93C5FD" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="8.5" letter-spacing="2">WEST AFRICA</text>
+
+  <!-- Gold Name Ribbon -->
+  <rect x="24" y="145" width="152" height="36" rx="10" fill="url(#waecGold)" filter="url(#shadow)"/>
+  <text x="100" y="169" text-anchor="middle" fill="#08183D" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="20" letter-spacing="3.5">WAEC</text>
 </svg>

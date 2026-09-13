@@ -1,34 +1,54 @@
-﻿<svg xmlns=http://www.w3.org/2000/svg viewBox=0 0 200 200 width=100% height=100%>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
   <defs>
-    <linearGradient id=stBg x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#E53935/>
-      <stop offset=100% stop-color=#C62828/>
+    <linearGradient id="stBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48"/>
+      <stop offset="100%" stop-color="#9F1239"/>
     </linearGradient>
-    <linearGradient id=starGold1 x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#FFF176/>
-      <stop offset=50% stop-color=#FBC02D/>
-      <stop offset=100% stop-color=#F57F17/>
+    <linearGradient id="facetGold1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="100%" stop-color="#FACC15"/>
     </linearGradient>
-    <linearGradient id=starGold2 x1=100% y1=0% x2=0% y2=100%>
-      <stop offset=0% stop-color=#FFF9C4/>
-      <stop offset=100% stop-color=#F9A825/>
+    <linearGradient id="facetGold2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
     </linearGradient>
-    <filter id=dropShadow x=-10% y=-10% width=130% height=130%>
-      <feDropShadow dx=2 dy=4 stdDeviation=4 flood-opacity=0.3/>
+    <linearGradient id="facetOrange1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB923C"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <linearGradient id="facetOrange2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C2410C"/>
+      <stop offset="100%" stop-color="#9A3412"/>
+    </linearGradient>
+    <filter id="starShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.35"/>
     </filter>
   </defs>
-  <rect width=200 height=200 rx=36 fill=url(#stBg)/>
-  <g transform=translate(100, 84) filter=url(#dropShadow)>
-    <polygon points=0,0 0,-56 16,-16 fill=url(#starGold1)/>
-    <polygon points=0,0 0,-56 -16,-16 fill=url(#starGold2)/>
-    <polygon points=0,0 52,-18 16,-16 fill=url(#starGold2)/>
-    <polygon points=0,0 52,-18 25,14 fill=url(#starGold1)/>
-    <polygon points=0,0 32,45 25,14 fill=url(#starGold2)/>
-    <polygon points=0,0 32,45 0,20 fill=url(#starGold1)/>
-    <polygon points=0,0 -32,45 0,20 fill=url(#starGold2)/>
-    <polygon points=0,0 -32,45 -25,14 fill=url(#starGold1)/>
-    <polygon points=0,0 -52,-18 -25,14 fill=url(#starGold2)/>
-    <polygon points=0,0 -52,-18 -16,-16 fill=url(#starGold1)/>
+
+  <!-- Background Card -->
+  <rect width="200" height="200" rx="32" fill="url(#stBg)"/>
+
+  <!-- 3D Multi-faceted StarTimes Star -->
+  <g transform="translate(100, 78)" filter="url(#starShadow)">
+    <!-- Top point -->
+    <polygon points="0,0 0,-46 14,-14" fill="url(#facetGold1)"/>
+    <polygon points="0,0 0,-46 -14,-14" fill="url(#facetGold2)"/>
+    <!-- Right point -->
+    <polygon points="0,0 44,-14 14,-14" fill="url(#facetGold2)"/>
+    <polygon points="0,0 44,-14 20,12" fill="url(#facetOrange1)"/>
+    <!-- Bottom right point -->
+    <polygon points="0,0 26,40 20,12" fill="url(#facetOrange1)"/>
+    <polygon points="0,0 26,40 0,16" fill="url(#facetOrange2)"/>
+    <!-- Bottom left point -->
+    <polygon points="0,0 -26,40 0,16" fill="url(#facetGold2)"/>
+    <polygon points="0,0 -26,40 -20,12" fill="url(#facetOrange2)"/>
+    <!-- Left point -->
+    <polygon points="0,0 -44,-14 -20,12" fill="url(#facetGold1)"/>
+    <polygon points="0,0 -44,-14 -14,-14" fill="url(#facetOrange1)"/>
   </g>
-  <text x=100 y=168 text-anchor=middle fill=#FFFFFF font-family=system-ui, -apple-system, sans-serif font-weight=900 font-size=24 letter-spacing=1>StarTimes</text>
+
+  <!-- StarTimes Wordmark -->
+  <text x="100" y="165" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="23" letter-spacing="1">StarTimes</text>
+  <text x="100" y="180" text-anchor="middle" fill="#FECDD3" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="8" letter-spacing="2">DIGITAL TV</text>
 </svg>

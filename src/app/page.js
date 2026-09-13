@@ -19,44 +19,40 @@ import {
 
 function WaecBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl gap-3">
-      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
-        <Image src="/logos/waec.svg" alt="WAEC" width={72} height={72} className="w-full h-full object-contain" />
+    <div className="w-full h-44 flex items-center justify-center bg-gradient-to-br from-blue-950 via-blue-900 to-slate-900 rounded-2xl p-2 shadow-inner">
+      <div className="w-32 h-32 flex items-center justify-center drop-shadow-md">
+        <Image src="/logos/waec.svg" alt="WAEC" width={128} height={128} className="w-full h-full object-contain" />
       </div>
-      <span className="text-white font-bold text-sm tracking-wide">W A E C</span>
     </div>
   );
 }
 
 function NecoBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-green-800 to-green-600 rounded-xl gap-3">
-      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
-        <Image src="/logos/neco.svg" alt="NECO" width={72} height={72} className="w-full h-full object-contain" />
+    <div className="w-full h-44 flex items-center justify-center bg-gradient-to-br from-emerald-950 via-green-900 to-teal-950 rounded-2xl p-2 shadow-inner">
+      <div className="w-32 h-32 flex items-center justify-center drop-shadow-md">
+        <Image src="/logos/neco.svg" alt="NECO" width={128} height={128} className="w-full h-full object-contain" />
       </div>
-      <span className="text-white font-bold text-sm tracking-wide">N E C O</span>
     </div>
   );
 }
 
 function NabtebBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-red-800 to-red-600 rounded-xl gap-3">
-      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
-        <Image src="/logos/nabteb.svg" alt="NABTEB" width={72} height={72} className="w-full h-full object-contain" />
+    <div className="w-full h-44 flex items-center justify-center bg-gradient-to-br from-red-950 via-red-900 to-rose-950 rounded-2xl p-2 shadow-inner">
+      <div className="w-32 h-32 flex items-center justify-center drop-shadow-md">
+        <Image src="/logos/nabteb.svg" alt="NABTEB" width={128} height={128} className="w-full h-full object-contain" />
       </div>
-      <span className="text-white font-bold text-sm tracking-wide">N A B T E B</span>
     </div>
   );
 }
 
 function NbaisBadge() {
   return (
-    <div className="w-full h-40 flex flex-col items-center justify-center bg-gradient-to-br from-purple-800 to-purple-600 rounded-xl gap-3">
-      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1">
-        <Image src="/logos/nbais.svg" alt="NBAIS" width={72} height={72} className="w-full h-full object-contain" />
+    <div className="w-full h-44 flex items-center justify-center bg-gradient-to-br from-purple-950 via-purple-900 to-indigo-950 rounded-2xl p-2 shadow-inner">
+      <div className="w-32 h-32 flex items-center justify-center drop-shadow-md">
+        <Image src="/logos/nbais.svg" alt="NBAIS" width={128} height={128} className="w-full h-full object-contain" />
       </div>
-      <span className="text-white font-bold text-sm tracking-wide">N B A I S</span>
     </div>
   );
 }
@@ -623,7 +619,7 @@ export default function Home() {
           <div className="bg-gray-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition">
             <Shield className="w-10 h-10 text-orange-500 mb-4" />
             <h3 className="text-xl font-bold mb-2 text-gray-900">Our Vision</h3>
-            <p className="text-gray-600">To become Nigeria's most trusted platform for utility payments, enabling convenience and reliability with every transaction.</p>
+            <p className="text-gray-600">To become Nigeria&apos;s most trusted platform for utility payments, enabling convenience and reliability with every transaction.</p>
           </div>
           <div className="bg-gray-50 rounded-2xl p-6 shadow-md hover:shadow-lg transition">
             <Users className="w-10 h-10 text-orange-500 mb-4" />

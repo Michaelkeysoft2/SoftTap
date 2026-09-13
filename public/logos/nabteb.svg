@@ -1,24 +1,51 @@
-﻿<svg xmlns=http://www.w3.org/2000/svg viewBox=0 0 200 200 width=100% height=100%>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
   <defs>
-    <linearGradient id=nabtebBg x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#B71C1C/>
-      <stop offset=100% stop-color=#5C0000/>
+    <linearGradient id="nabtebBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#991B1B"/>
+      <stop offset="100%" stop-color="#4C0505"/>
     </linearGradient>
-    <linearGradient id=nabGold x1=0% y1=0% x2=100% y2=100%>
-      <stop offset=0% stop-color=#FFF9C4/>
-      <stop offset=50% stop-color=#FBC02D/>
-      <stop offset=100% stop-color=#E65100/>
+    <linearGradient id="nabtebGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF59D"/>
+      <stop offset="45%" stop-color="#FBC02D"/>
+      <stop offset="100%" stop-color="#E65100"/>
     </linearGradient>
+    <filter id="nabShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
   </defs>
-  <rect width=200 height=200 rx=36 fill=url(#nabtebBg)/>
-  <!-- Outer Ring & Technical Cog/Gear -->
-  <circle cx=100 cy=88 r=60 fill=none stroke=url(#nabGold) stroke-width=4/>
-  <circle cx=100 cy=88 r=52 fill=#7F0000 stroke=url(#nabGold) stroke-width=1.5/>
-  <!-- Gear & Book Motif -->
-  <circle cx=100 cy=88 r=30 fill=none stroke=url(#nabGold) stroke-width=6 stroke-dasharray=6,4/>
-  <path d=M78,84 Q100,76 100,82 Q100,76 122,84 L122,104 Q100,96 100,102 Q100,96 78,104 Z fill=url(#nabGold)/>
-  <circle cx=100 cy=64 r=7 fill=url(#nabGold)/>
-  <!-- Banner -->
-  <rect x=25 y=148 width=150 height=34 rx=8 fill=url(#nabGold)/>
-  <text x=100 y=171 text-anchor=middle fill=#5C0000 font-family=system-ui, -apple-system, sans-serif font-weight=900 font-size=18 letter-spacing=2>NABTEB</text>
+
+  <!-- Background -->
+  <rect width="200" height="200" rx="32" fill="url(#nabtebBg)"/>
+
+  <!-- Outer Cogwheel & Ring (Technical Education Symbol) -->
+  <circle cx="100" cy="84" r="56" fill="none" stroke="url(#nabtebGold)" stroke-width="3.5"/>
+  <circle cx="100" cy="84" r="50" fill="#5E0B0B" stroke="url(#nabtebGold)" stroke-width="1.5"/>
+
+  <!-- Gear Teeth Pattern around Circle -->
+  <g stroke="url(#nabtebGold)" stroke-width="5" stroke-linecap="butt" opacity="0.9">
+    <line x1="100" y1="26" x2="100" y2="33"/>
+    <line x1="100" y1="135" x2="100" y2="142"/>
+    <line x1="42" y1="84" x2="49" y2="84"/>
+    <line x1="151" y1="84" x2="158" y2="84"/>
+    <line x1="59" y1="43" x2="64" y2="48"/>
+    <line x1="136" y1="120" x2="141" y2="125"/>
+    <line x1="59" y1="125" x2="64" y2="120"/>
+    <line x1="136" y1="48" x2="141" y2="43"/>
+  </g>
+
+  <!-- Central Torch Flame & Gear Core -->
+  <circle cx="100" cy="62" r="7" fill="url(#nabtebGold)" filter="url(#nabShadow)"/>
+
+  <!-- Book of Business & Technical Skills -->
+  <path d="M74,82 C86,74 96,78 100,82 C104,78 114,74 126,82 L126,104 C114,96 104,100 100,103 C96,100 86,96 74,104 Z" 
+        fill="url(#nabtebGold)" filter="url(#nabShadow)"/>
+  <line x1="100" y1="82" x2="100" y2="103" stroke="#4C0505" stroke-width="1.8"/>
+
+  <!-- Subtitle Tag -->
+  <text x="100" y="122" text-anchor="middle" fill="#FECACA" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="8" letter-spacing="1.5">TECHNICAL &amp; BUSINESS</text>
+
+  <!-- Gold Banner -->
+  <rect x="20" y="145" width="160" height="36" rx="10" fill="url(#nabtebGold)" filter="url(#nabShadow)"/>
+  <text x="100" y="169" text-anchor="middle" fill="#4C0505" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="18" letter-spacing="3">NABTEB</text>
 </svg>

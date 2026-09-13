@@ -1,4 +1,7 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
+
+// Fail fast, don't buffer commands if MongoDB is offline
+mongoose.set('bufferCommands', false);
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -9,36 +12,10 @@ if (!cached) {
 }
 
 export async function connectToDatabase() {
-  // If explicitly flagged to use local file DB, return mock connection immediately
-  if (global.isLocalDb) {
+  // If explicitly flagged to use local file DB or no URI is provided, use local DB immediately
+  if (global.isLocalDb || !MONGODB_URI) {
+    global.isLocalDb = true;
     return { isLocal: true };
-  }
-
-  // If no MONGODB_URI is provided and local mongodb is not running, fail fast to local DB
-  if (!MONGODB_URI) {
-    // Attempt local MongoDB with a short timeout
-    try {
-      if (cached.conn && mongoose.connection.readyState === 1) {
-        return cached.conn;
-      }
-
-      if (!cached.promise) {
-        cached.promise = mongoose.connect('mongodb://127.0.0.1:27017/softtap', {
-          serverSelectionTimeoutMS: 1500, // 1.5s fast timeout if not installed
-          bufferCommands: false,
-        });
-      }
-
-      cached.conn = await cached.promise;
-      global.isLocalDb = false;
-      return cached.conn;
-    } catch (err) {
-      console.log('[SoftTap Database] MongoDB not running locally. Using persistent file storage (data/db.json).');
-      cached.promise = null;
-      cached.conn = null;
-      global.isLocalDb = true;
-      return { isLocal: true };
-    }
   }
 
   // If MONGODB_URI is provided in environment (e.g. Atlas)
@@ -48,7 +25,7 @@ export async function connectToDatabase() {
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 3000,
       bufferCommands: false,
     });
   }

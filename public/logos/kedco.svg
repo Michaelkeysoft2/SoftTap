@@ -1,7 +1,18 @@
-﻿<svg xmlns=http://www.w3.org/2000/svg viewBox=0 0 200 200 width=100% height=100%>
-  <rect width=200 height=200 rx=36 fill=#7E22CE/>
-  <circle cx=100 cy=85 r=50 fill=#FEF08A/>
-  <polygon points=104,45 80,90 100,90 92,125 124,78 104,78 fill=#7E22CE/>
-  <rect x=25 y=148 width=150 height=34 rx=8 fill=#FEF08A/>
-  <text x=100 y=171 text-anchor=middle fill=#7E22CE font-family=system-ui, sans-serif font-weight=900 font-size=18 letter-spacing=2>KEDCO</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="kedcoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7E22CE"/>
+      <stop offset="100%" stop-color="#3B0764"/>
+    </linearGradient>
+    <linearGradient id="kedcoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="100%" stop-color="#FACC15"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="32" fill="url(#kedcoBg)"/>
+  <circle cx="100" cy="80" r="48" fill="#581C87" stroke="url(#kedcoGold)" stroke-width="2.5"/>
+  <polygon points="106,44 80,82 102,82 92,118 124,74 104,74" fill="url(#kedcoGold)"/>
+  <rect x="24" y="142" width="152" height="38" rx="10" fill="url(#kedcoGold)"/>
+  <text x="100" y="167" text-anchor="middle" fill="#3B0764" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="20" letter-spacing="2">KEDCO</text>
 </svg>

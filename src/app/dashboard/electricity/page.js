@@ -9,6 +9,7 @@ const discos = [
   { id: 'EKEDC', name: 'Eko Electric (EKEDC)', logo: '/logos/ekedc.svg' },
   { id: 'AEDC', name: 'Abuja Electric (AEDC)', logo: '/logos/aedc.svg' },
   { id: 'IBEDC', name: 'Ibadan Electric (IBEDC)', logo: '/logos/ibedc.svg' },
+  { id: 'EEDC', name: 'Enugu Electric (EEDC)', logo: '/logos/eedc.svg' },
   { id: 'KEDCO', name: 'Kano Electric (KEDCO)', logo: '/logos/kedco.svg' },
   { id: 'PHED', name: 'Port Harcourt (PHED)', logo: '/logos/phed.svg' },
   { id: 'JED', name: 'Jos Electric (JED)', logo: '/logos/jed.svg' },
