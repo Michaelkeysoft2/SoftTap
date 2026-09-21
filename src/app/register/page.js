@@ -21,6 +21,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -52,7 +53,10 @@ export default function RegisterPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         localStorage.setItem('softtap_user', JSON.stringify(data.user));
-        window.location.href = '/dashboard';
+        setSuccess('Account created successfully! Redirecting to your dashboard…');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
       } else {
         setError(data.message || 'Registration failed');
       }
@@ -67,7 +71,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between selection:bg-orange-400 selection:text-white">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center pt-32 pb-20 px-4 relative overflow-hidden">
+      <main className="flex-1 flex items-center justify-center pt-20 sm:pt-32 pb-16 px-4 relative overflow-hidden">
         <div className="w-full max-w-2xl relative z-10">
           <div className="bg-white p-8 sm:p-10 rounded-3xl shadow-md border border-gray-200 space-y-6">
             <div className="text-center space-y-2">

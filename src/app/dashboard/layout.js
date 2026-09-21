@@ -2,23 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Zap, LayoutDashboard, Wifi, Signal, Tv, Lightbulb, BookOpen, 
-  Wallet, History, User, LogOut, Menu, X, Shield, Sparkles 
+  Wallet, History, User, LogOut, Menu, X, Shield, Sparkles, Loader2
 } from 'lucide-react';
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('softtap_user');
     if (stored) {
       setUser(JSON.parse(stored));
+      setAuthChecked(true);
+    } else {
+      // Not logged in — redirect to login
+      router.replace('/login');
     }
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem('softtap_user');
@@ -39,6 +45,18 @@ export default function DashboardLayout({ children }) {
 
   if (user?.role === 'admin') {
     navItems.push({ name: 'Admin Control Panel', href: '/admin', icon: Shield });
+  }
+
+  // Show loading spinner while auth check is running
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-gray-400">
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+          <span className="text-sm font-medium">Loading…</span>
+        </div>
+      </div>
+    );
   }
 
   return (

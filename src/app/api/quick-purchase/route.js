@@ -36,7 +36,7 @@ export async function POST(req) {
     }
 
     const price = parseFloat(amount);
-    const requestId = paymentReference || `ST_QP_${Date.now()}`;
+    const requestId = paymentReference || `ST_QP_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     let result = null;
     let serviceDisplayName = '';
     let recipientIdentifier = '';

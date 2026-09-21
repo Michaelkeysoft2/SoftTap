@@ -43,7 +43,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between selection:bg-orange-400 selection:text-white">
       <Navbar />
 
-      <main className="flex-1 flex items-center justify-center pt-32 pb-20 px-4 relative overflow-hidden">
+      <main className="flex-1 flex items-center justify-center pt-20 sm:pt-32 pb-16 px-4 relative overflow-hidden">
         <div className="w-full max-w-md space-y-6 relative z-10">
           {/* Promo Offer Banner */}
           <div className="w-full overflow-hidden bg-orange-50 border border-orange-200 rounded-2xl p-3 text-center shadow-sm">

@@ -31,7 +31,7 @@ export async function initializePaystackPayment({ email, amount, reference, call
     status: true,
     message: 'Authorization URL created',
     data: {
-      authorization_url: `/dashboard/fund-wallet?reference=${reference}&simulated=true&amount=${amount}`,
+      authorization_url: callbackUrl || `/dashboard/fund-wallet?reference=${reference}&simulated=true&amount=${amount}`,
       access_code: `sim_access_${Date.now()}`,
       reference: reference,
     },
@@ -58,7 +58,6 @@ export async function verifyPaystackPayment(reference) {
     data: {
       status: 'success',
       reference: reference,
-      amount: 100000, // kobo
     },
   };
 }

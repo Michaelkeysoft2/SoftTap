@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   Wallet, Plus, Wifi, Signal, Tv, Lightbulb, BookOpen, 
-  History, ArrowUpRight, Copy, Check, Sparkles, ShieldCheck 
+  History, ArrowUpRight, Copy, Check, Sparkles, ShieldCheck, Loader2
 } from 'lucide-react';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [walletBalance, setWalletBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
@@ -19,9 +21,12 @@ export default function DashboardPage() {
     if (stored) {
       const u = JSON.parse(stored);
       setUser(u);
+      setWalletBalance(u.walletBalance || 0);
       fetchUserData(u.id);
+    } else {
+      router.replace('/login');
     }
-  }, []);
+  }, [router]);
 
   const fetchUserData = async (userId) => {
     try {
@@ -30,9 +35,15 @@ export default function DashboardPage() {
       if (res.ok && data.success) {
         setWalletBalance(data.walletBalance);
         setTransactions(data.transactions || []);
+        // Sync updated balance back to localStorage
+        const stored = localStorage.getItem('softtap_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          localStorage.setItem('softtap_user', JSON.stringify({ ...u, walletBalance: data.walletBalance }));
+        }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Dashboard fetch error:', err);
     } finally {
       setLoading(false);
     }
