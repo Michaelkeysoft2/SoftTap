@@ -37,6 +37,7 @@ export async function POST(req) {
         amount: fundAmount,
         reference: ref,
         callbackUrl,
+        metadata: { userId: user._id.toString(), email: user.email, phone: user.phone },
       });
 
       return NextResponse.json({ success: true, paystack: result, reference: ref });

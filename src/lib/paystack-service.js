@@ -4,7 +4,7 @@
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || '';
 
-export async function initializePaystackPayment({ email, amount, reference, callbackUrl }) {
+export async function initializePaystackPayment({ email, amount, reference, callbackUrl, metadata }) {
   if (PAYSTACK_SECRET_KEY) {
     try {
       const response = await fetch('https://api.paystack.co/transaction/initialize', {
@@ -18,6 +18,7 @@ export async function initializePaystackPayment({ email, amount, reference, call
           amount: Math.round(amount * 100), // Convert NGN to Kobo
           reference: reference,
           callback_url: callbackUrl,
+          metadata: metadata || {},
         }),
       });
       return await response.json();
