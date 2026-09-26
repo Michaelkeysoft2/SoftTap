@@ -10,7 +10,7 @@ import { useState } from 'react';
 import {
   Wifi, Tv, Lightbulb, Signal, LogIn, UserPlus,
   Shield, Target, Users, CheckCircle2, Star,
-  Phone, Mail, MessageSquare, BookOpen, Zap, ChevronDown, Linkedin
+  Phone, Mail, MessageSquare, BookOpen, Zap, ChevronDown, Linkedin, MapPin
 } from 'lucide-react';
 
 /* =============================================
@@ -96,7 +96,7 @@ export default function Home() {
     },
     {
       q: 'Your question is not covered here?',
-      a: 'Contact us directly via WhatsApp on 08039579410, email michaelkeysofy@gmail.com, or reach us on Telegram/TikTok/Twitter @michalkeysoft.',
+      a: 'Contact us directly via WhatsApp on 08039579410, email michaelkeysoft@gmail.com, or reach us on Telegram/TikTok/Twitter @michalkeysoft.',
     },
   ];
 
@@ -717,7 +717,17 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Contact Details */}
-            <div className="space-y-5">
+            <div className="space-y-4">
+              <div className="brand-card p-5 flex items-center gap-4 block border border-gray-100">
+                <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                  <MapPin className="w-6 h-6 text-orange-500" />
+                </div>
+                <div>
+                  <p className="font-bold text-blue-900">Physical Business Address</p>
+                  <p className="text-gray-600 text-sm">3, Barika, Opposite UI Second Gate, Ibadan, Oyo State, Nigeria</p>
+                </div>
+              </div>
+
               <a href="tel:08039579410" className="brand-card p-5 flex items-center gap-4 block hover:border-orange-300">
                 <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
                   <Phone className="w-6 h-6 text-orange-500" />
@@ -727,13 +737,14 @@ export default function Home() {
                   <p className="text-gray-500 text-sm">08039579410</p>
                 </div>
               </a>
-              <a href="mailto:michaelkeysofy@gmail.com" className="brand-card p-5 flex items-center gap-4 block hover:border-orange-300">
+
+              <a href="mailto:michaelkeysoft@gmail.com" className="brand-card p-5 flex items-center gap-4 block hover:border-orange-300">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
                   <Mail className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
                   <p className="font-bold text-blue-900">Email Support</p>
-                  <p className="text-gray-500 text-sm">michaelkeysofy@gmail.com</p>
+                  <p className="text-gray-500 text-sm">michaelkeysoft@gmail.com</p>
                 </div>
               </a>
               <a href="https://www.linkedin.com/in/michaelolayiwola/" target="_blank" rel="noopener noreferrer" className="brand-card p-5 flex items-center gap-4 block hover:border-orange-300">

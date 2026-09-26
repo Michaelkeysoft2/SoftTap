@@ -22,7 +22,7 @@ const faqs = [
   },
   {
     question: 'What if I encounter an issue with my purchase?',
-    answer: 'Our support team is available 24/7. You can reach out directly via WhatsApp/Call at 08039579410 or email us at michaelkeysofy@gmail.com, and we will resolve it promptly.',
+    answer: 'Our support team is available 24/7. You can reach out directly via WhatsApp/Call at 08039579410 or email us at michaelkeysoft@gmail.com, and we will resolve it promptly.',
   },
 ];
 

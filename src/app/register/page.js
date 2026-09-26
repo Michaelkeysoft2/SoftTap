@@ -239,6 +239,12 @@ export default function RegisterPage() {
                   <UserPlus className="w-4 h-4" />
                   {loading ? 'Creating Account...' : 'Register SoftTap Account'}
                 </button>
+                <p className="text-[11px] text-gray-500 text-center mt-2.5 leading-relaxed">
+                  By creating an account, you agree to SoftTap&apos;s{' '}
+                  <Link href="/terms" className="text-orange-600 underline hover:text-orange-700">Terms &amp; Conditions</Link>,{' '}
+                  <Link href="/privacy" className="text-orange-600 underline hover:text-orange-700">Privacy Policy</Link>, and{' '}
+                  <Link href="/refund-policy" className="text-orange-600 underline hover:text-orange-700">Refund Policy</Link>.
+                </p>
               </div>
             </form>
 
