@@ -7,6 +7,7 @@ import {
   Zap, LayoutDashboard, Wifi, Signal, Tv, Lightbulb, BookOpen, 
   Wallet, History, User, LogOut, Menu, X, Shield, Sparkles, Loader2
 } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
@@ -74,6 +75,7 @@ export default function DashboardLayout({ children }) {
         </Link>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <button
             onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
             className="px-2.5 py-1.5 rounded-lg bg-orange-500 text-white font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer"
@@ -152,6 +154,12 @@ export default function DashboardLayout({ children }) {
               </div>
             </div>
           )}
+
+          {/* Appearance Toggle */}
+          <div className="flex items-center justify-between px-2 pt-2 pb-1 border-t border-gray-100">
+            <span className="text-xs font-bold text-gray-500">Theme</span>
+            <ThemeToggle showLabel={true} />
+          </div>
 
           <button
             onClick={handleLogout}

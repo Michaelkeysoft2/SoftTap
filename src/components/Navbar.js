@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, Zap, LogIn, UserPlus } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -59,8 +60,9 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop CTA Buttons */}
+        {/* Desktop CTA Buttons & Theme Toggle */}
         <div className="hidden lg:flex items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
             className="px-4 py-2 rounded-full text-xs font-bold text-orange-500 bg-orange-500/10 hover:bg-orange-500 hover:text-white border border-orange-500/30 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
@@ -85,11 +87,12 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile / Tablet Hamburger */}
+        {/* Mobile / Tablet Hamburger & Theme Toggle */}
         <div className="lg:hidden flex items-center gap-2">
+          <ThemeToggle />
           <button
             onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
-            className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-sm flex items-center gap-1 active:scale-95"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-sm flex items-center gap-1 active:scale-95 cursor-pointer"
           >
             <span>📲</span> Install
           </button>
@@ -107,7 +110,7 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white/98 backdrop-blur-xl border-t border-gray-100 shadow-2xl px-6 py-6 transition-all animate-in slide-in-from-top duration-300">
           {/* Prominent Mobile App Install Card */}
-          <div className="mb-5 p-3.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white flex items-center justify-between shadow-md">
+          <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-black text-xs">
                 ST
@@ -126,6 +129,12 @@ export default function Navbar() {
             >
               Install App
             </button>
+          </div>
+
+          {/* Theme Mode Toggle Row */}
+          <div className="flex items-center justify-between py-2.5 px-1 border-b border-gray-100 mb-4">
+            <span className="text-xs font-bold text-gray-700">Appearance Mode</span>
+            <ThemeToggle showLabel={true} />
           </div>
 
           <ul className="flex flex-col gap-3 mb-6">
