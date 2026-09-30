@@ -61,6 +61,12 @@ export default function Navbar() {
 
         {/* Desktop CTA Buttons */}
         <div className="hidden lg:flex items-center gap-3">
+          <button
+            onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
+            className="px-4 py-2 rounded-full text-xs font-bold text-orange-500 bg-orange-500/10 hover:bg-orange-500 hover:text-white border border-orange-500/30 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+          >
+            <span className="text-sm">📲</span> Install App
+          </button>
           <Link
             href="/login"
             className={`px-5 py-2 rounded-full text-sm font-semibold border transition-all ${
@@ -80,18 +86,48 @@ export default function Navbar() {
         </div>
 
         {/* Mobile / Tablet Hamburger */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`lg:hidden p-2 rounded-xl transition-colors ${scrolled ? 'text-gray-800 bg-gray-100' : 'text-white bg-white/10 backdrop-blur-md'}`}
-          aria-label="Toggle Menu"
-        >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="lg:hidden flex items-center gap-2">
+          <button
+            onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-sm flex items-center gap-1 active:scale-95"
+          >
+            <span>📲</span> Install
+          </button>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className={`p-2 rounded-xl transition-colors ${scrolled ? 'text-gray-800 bg-gray-100' : 'text-white bg-white/10 backdrop-blur-md'}`}
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile / Tablet Menu Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white/98 backdrop-blur-xl border-t border-gray-100 shadow-2xl px-6 py-6 transition-all animate-in slide-in-from-top duration-300">
+          {/* Prominent Mobile App Install Card */}
+          <div className="mb-5 p-3.5 rounded-2xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white flex items-center justify-between shadow-md">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-black text-xs">
+                ST
+              </div>
+              <div>
+                <p className="text-xs font-black leading-tight">SoftTap Mobile App</p>
+                <p className="text-[10px] text-orange-100">Add to home screen for faster bills</p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                window.dispatchEvent(new Event('softtap-trigger-install'));
+              }}
+              className="px-3.5 py-1.5 rounded-xl bg-white text-orange-600 font-extrabold text-xs shadow hover:bg-orange-50 transition active:scale-95 cursor-pointer"
+            >
+              Install App
+            </button>
+          </div>
+
           <ul className="flex flex-col gap-3 mb-6">
             {navLinks.map((link) => (
               <li key={link.href}>

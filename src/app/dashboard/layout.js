@@ -73,12 +73,20 @@ export default function DashboardLayout({ children }) {
           </span>
         </Link>
 
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg bg-gray-100 text-gray-700 border border-gray-200"
-        >
-          {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
+            className="px-2.5 py-1.5 rounded-lg bg-orange-500 text-white font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 cursor-pointer"
+          >
+            <span>📲</span> Install
+          </button>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg bg-gray-100 text-gray-700 border border-gray-200"
+          >
+            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar Navigation */}
@@ -120,6 +128,14 @@ export default function DashboardLayout({ children }) {
                 </Link>
               );
             })}
+
+            {/* Install App Button in Sidebar */}
+            <button
+              onClick={() => window.dispatchEvent(new Event('softtap-trigger-install'))}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs bg-gradient-to-r from-orange-500/10 to-amber-500/10 hover:from-orange-500 hover:to-amber-500 text-orange-600 hover:text-white border border-orange-500/30 transition-all shadow-sm active:scale-95 cursor-pointer mt-3"
+            >
+              <span className="text-base">📲</span> Install SoftTap App
+            </button>
           </nav>
         </div>
 
