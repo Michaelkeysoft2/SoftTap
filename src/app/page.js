@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import FAQAccordion from '@/components/FAQAccordion';
 import QuickPurchaseModal from '@/components/QuickPurchaseModal';
+import InstantRechargeCard from '@/components/InstantRechargeCard';
 import { useState } from 'react';
 import {
   Wifi, Tv, Lightbulb, Signal, LogIn, UserPlus,
@@ -71,9 +72,17 @@ export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState(null);
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false);
   const [quickBuyTab, setQuickBuyTab] = useState('data');
+  const [quickBuyInitialData, setQuickBuyInitialData] = useState({});
 
   const openQuickBuy = (tab) => {
     setQuickBuyTab(tab);
+    setQuickBuyInitialData({});
+    setIsQuickBuyOpen(true);
+  };
+
+  const handleDirectProceed = ({ tab, data }) => {
+    setQuickBuyTab(tab);
+    setQuickBuyInitialData(data);
     setIsQuickBuyOpen(true);
   };
 
@@ -118,85 +127,116 @@ export default function Home() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[140px] pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/15 rounded-full blur-[140px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center relative z-10">
-          {/* Left Column: Headings & Action Buttons */}
-          <div className="lg:col-span-7 space-y-5 text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs sm:text-sm font-semibold tracking-wide shadow-sm">
-              <Zap className="w-4 h-4 text-orange-400" /> Welcome To SoftTap!
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+          {/* Left Column: Direct Punchy Value Proposition */}
+          <div className="lg:col-span-6 space-y-6 text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/15 border border-orange-500/40 text-orange-400 text-xs sm:text-sm font-bold tracking-wide shadow-sm">
+              <Zap className="w-4 h-4 text-orange-400 fill-orange-400" /> Nigeria&apos;s #1 Instant VTU &amp; Bills Platform
             </div>
             
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.15] text-white tracking-tight">
-              DATA, TV <br className="hidden sm:block" />
-              SUBSCRIPTION, <br className="hidden sm:block" />
-              ELECTRICITY BILLS, <br className="hidden sm:block" />
-              EXAMS/RESULT <br className="hidden sm:block" />
-              <span className="text-orange-400">CHECKER PINS!!</span>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-[1.12] text-white tracking-tight">
+              Cheap Data, Airtime &amp; Bills <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500">
+                Delivered in 10 Seconds.
+              </span>
             </h1>
 
-            <p className="text-gray-300 font-medium text-base sm:text-lg max-w-xl">
-              All Your Bills, One Tap Away. Instant automated delivery for mobile data, airtime, cable TV, electricity tokens, and exam result checker pins.
+            <p className="text-gray-300 font-medium text-base sm:text-lg max-w-xl leading-relaxed">
+              Skip queues and delays. Buy MTN, Airtel, Glo, 9mobile data bundles, airtime top-ups, power tokens, cable TV, and exam pins instantly at guaranteed wholesale prices.
             </p>
 
-            <div className="flex flex-row flex-wrap gap-3 pt-2">
-              <button
-                onClick={() => openQuickBuy('data')}
-                className="btn-orange-solid shadow-xl bg-orange-500 hover:bg-orange-600 font-extrabold flex items-center gap-2 px-6 py-3.5 text-base border-2 border-orange-400"
-              >
-                <Zap className="w-5 h-5 fill-white" />
-                ⚡ Buy Instantly (No Account Needed)
-              </button>
+            <div className="flex flex-row flex-wrap gap-3 pt-1">
               <Link href="/register">
-                <button className="btn-white-glass shadow-lg hover:bg-white/20">
+                <button className="px-6 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-sm sm:text-base transition shadow-lg shadow-orange-500/30 flex items-center gap-2 active:scale-95">
                   <UserPlus className="w-5 h-5" />
                   Create Free Account
                 </button>
               </Link>
               <Link href="/login">
-                <button className="btn-white-glass shadow-lg hover:bg-white/20">
+                <button className="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm sm:text-base border border-white/20 transition flex items-center gap-2 active:scale-95">
                   <LogIn className="w-5 h-5" />
                   Login
                 </button>
               </Link>
             </div>
 
-            {/* Quick Badges */}
-            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-300">
-              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
+            {/* Quick Trust Badges */}
+            <div className="pt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-gray-300">
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
                 <CheckCircle2 className="w-4 h-4 text-green-400" /> Instant Auto-Delivery
               </span>
-              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
-                <Shield className="w-4 h-4 text-blue-400" /> 100% Secure Payment
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
+                <Shield className="w-4 h-4 text-blue-400" /> Paystack Secured
               </span>
-              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg">
+              <span className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl">
                 <Zap className="w-4 h-4 text-orange-400" /> Wholesale Rates
               </span>
             </div>
           </div>
 
-          {/* Right Column: Phone & Laptop Visual Mockup */}
-          <div className="lg:col-span-5 flex justify-center items-center relative">
-            {/* Glowing Backdrop Frame */}
+          {/* Right Column: Direct Instant Recharge Card (Takes people direct into business) */}
+          <div className="lg:col-span-6 flex justify-center items-center relative">
             <div className="absolute -inset-2 bg-gradient-to-r from-orange-500/30 to-blue-600/30 rounded-3xl blur-2xl opacity-75" />
-            
-            <div className="relative w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10 bg-slate-900/80 backdrop-blur-sm group hover:border-orange-500/40 transition-all duration-500">
-              <Image
-                src="/hero-mockup.jpg"
-                alt="SoftTap - Instant Data, Cable TV & Electricity Bill Payment on Laptop & Smartphone"
-                width={800}
-                height={500}
-                priority
-                className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700"
-              />
-              {/* Subtle bottom gradient on image */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
-            </div>
+            <InstantRechargeCard onProceed={handleDirectProceed} />
           </div>
         </div>
 
         {/* Scroll cue */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-60 animate-bounce pointer-events-none">
-          <span className="text-xs text-white">Scroll</span>
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-1 opacity-60 animate-bounce pointer-events-none">
+          <span className="text-xs text-white">Scroll for More</span>
           <ChevronDown className="w-4 h-4 text-white" />
+        </div>
+      </section>
+
+      {/* ============================
+          DIRECT POPULAR SHORTCUTS STRIP
+          ============================ */}
+      <section className="bg-slate-900 border-y border-white/10 py-4 px-4 sm:px-8 text-white relative z-20">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-1 rounded-md bg-orange-500/20 text-orange-400 font-extrabold text-xs uppercase tracking-wider flex items-center gap-1 border border-orange-500/30">
+              <Zap className="w-3.5 h-3.5 fill-orange-400" /> Direct Shortcuts
+            </span>
+            <span className="text-xs sm:text-sm text-gray-300 font-medium">Quick 1-Tap Recharges:</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => openQuickBuy('data')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              📶 MTN 1GB @ ₦290
+            </button>
+            <button
+              onClick={() => openQuickBuy('data')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              📶 Airtel 1GB @ ₦320
+            </button>
+            <button
+              onClick={() => openQuickBuy('airtime')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              ⚡ Airtime Top-Up
+            </button>
+            <button
+              onClick={() => openQuickBuy('exam')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              🎓 WAEC Pin (₦3,320)
+            </button>
+            <button
+              onClick={() => openQuickBuy('tv')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              📺 Cable TV
+            </button>
+            <button
+              onClick={() => openQuickBuy('electricity')}
+              className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-orange-500 hover:text-white text-xs font-bold transition border border-white/10"
+            >
+              💡 Power Token
+            </button>
+          </div>
         </div>
       </section>
 
@@ -809,6 +849,7 @@ export default function Home() {
         isOpen={isQuickBuyOpen}
         onClose={() => setIsQuickBuyOpen(false)}
         initialTab={quickBuyTab}
+        initialData={quickBuyInitialData}
       />
     </div>
   );

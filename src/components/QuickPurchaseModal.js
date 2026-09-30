@@ -99,42 +99,47 @@ const examTypes = [
   { id: 'NBAIS', name: 'NBAIS e-Pin', price: 920, logo: '/logos/nbais.svg' },
 ];
 
-export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data' }) {
+export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data', initialData = {} }) {
   const [activeTab, setActiveTab] = useState(initialTab);
   
   // Data state
-  const [selectedNetwork, setSelectedNetwork] = useState(networks[0]);
-  const [selectedDataPlan, setSelectedDataPlan] = useState(dataPlans.MTN[1]);
-  const [dataPhone, setDataPhone] = useState('');
+  const [selectedNetwork, setSelectedNetwork] = useState(initialData.selectedNetwork || networks[0]);
+  const [selectedDataPlan, setSelectedDataPlan] = useState(initialData.selectedDataPlan || dataPlans.MTN[1]);
+  const [dataPhone, setDataPhone] = useState(initialData.dataPhone || '');
 
   // Airtime state
-  const [airtimeNetwork, setAirtimeNetwork] = useState(networks[0]);
-  const [airtimePhone, setAirtimePhone] = useState('');
-  const [airtimeAmount, setAirtimeAmount] = useState('500');
+  const [airtimeNetwork, setAirtimeNetwork] = useState(initialData.airtimeNetwork || networks[0]);
+  const [airtimePhone, setAirtimePhone] = useState(initialData.airtimePhone || '');
+  const [airtimeAmount, setAirtimeAmount] = useState(initialData.airtimeAmount || '500');
 
   // TV state
-  const [selectedTvProvider, setSelectedTvProvider] = useState(tvProviders[0]);
-  const [selectedTvPlan, setSelectedTvPlan] = useState(tvProviders[0].plans[0]);
-  const [smartcardNo, setSmartcardNo] = useState('');
+  const [selectedTvProvider, setSelectedTvProvider] = useState(initialData.selectedTvProvider || tvProviders[0]);
+  const [selectedTvPlan, setSelectedTvPlan] = useState(initialData.selectedTvPlan || tvProviders[0].plans[0]);
+  const [smartcardNo, setSmartcardNo] = useState(initialData.smartcardNo || '');
 
   // Electricity state
-  const [selectedDisco, setSelectedDisco] = useState(discos[0]);
-  const [meterType, setMeterType] = useState('prepaid');
-  const [meterNo, setMeterNo] = useState('');
-  const [electricityAmount, setElectricityAmount] = useState('2000');
+  const [selectedDisco, setSelectedDisco] = useState(initialData.selectedDisco || discos[0]);
+  const [meterType, setMeterType] = useState(initialData.meterType || 'prepaid');
+  const [meterNo, setMeterNo] = useState(initialData.meterNo || '');
+  const [electricityAmount, setElectricityAmount] = useState(initialData.electricityAmount || '2000');
 
   // Exam pin state
-  const [selectedExam, setSelectedExam] = useState(examTypes[0]);
-  const [pinQuantity, setPinQuantity] = useState(1);
+  const [selectedExam, setSelectedExam] = useState(initialData.selectedExam || examTypes[0]);
+  const [pinQuantity, setPinQuantity] = useState(initialData.pinQuantity || 1);
 
   // Common customer info
-  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerEmail, setCustomerEmail] = useState(initialData.customerEmail || '');
   
   // Transaction flow state
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [deliveryResult, setDeliveryResult] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // Sync state when modal is opened from direct hero widget
+  useState(() => {
+    if (initialTab) setActiveTab(initialTab);
+  });
 
   if (!isOpen) return null;
 
