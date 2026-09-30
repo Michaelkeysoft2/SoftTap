@@ -137,7 +137,7 @@ export default function Home() {
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-[1.12] text-white tracking-tight">
               Cheap Data, Airtime &amp; Bills <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500">
-                Delivered in 10 Seconds.
+                Delivered in less than 10 Seconds.
               </span>
             </h1>
 
