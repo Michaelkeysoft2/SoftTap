@@ -34,6 +34,8 @@ export default function InstallPWA() {
         .register('/sw.js')
         .then((reg) => {
           console.log('[SoftTap PWA] Service Worker registered:', reg.scope);
+          // Check for service worker updates immediately
+          reg.update();
         })
         .catch((err) => {
           console.warn('[SoftTap PWA] Service Worker registration failed:', err);
