@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Wifi, Phone, ArrowRight, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Wifi, Phone, ArrowRight, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 
 const networks = [
   { id: 'MTN', name: 'MTN', logo: '/logos/mtn.jpg', color: 'border-yellow-400 bg-yellow-50 text-yellow-800' },
@@ -11,51 +11,11 @@ const networks = [
   { id: '9MOBILE', name: '9mobile', logo: '/logos/9mobile.jpg', color: 'border-emerald-400 bg-emerald-50 text-emerald-800' },
 ];
 
-const dataPlans = {
-  MTN: [
-    { name: '500MB (SME)', price: 485, validity: '7days' },
-    { name: '1GB (SME)', price: 776, validity: '7days' },
-    { name: '1.5GB (SME)', price: 970, validity: '7days' },
-    { name: '2GB (SME)', price: 1455, validity: '30days' },
-    { name: '3.5GB (SME)', price: 2425, validity: '30days' },
-    { name: '6GB (SME)', price: 2425, validity: '7days' },
-    { name: '7GB (SME)', price: 3395, validity: '30days' },
-    { name: '10GB (SME)', price: 4365, validity: '30days' },
-    { name: '500MB (CG_LITE)', price: 109, validity: '30days' },
-    { name: '1GB (CG_LITE)', price: 219, validity: '30days' },
-    { name: '2GB (CG_LITE)', price: 438, validity: '30days' },
-    { name: '3GB (CG_LITE)', price: 658, validity: '30days' },
-    { name: '5GB (CG_LITE)', price: 1097, validity: '30days' },
-    { name: '10GB (CG_LITE)', price: 2194, validity: '30days' },
-  ],
-  AIRTEL: [
-    { name: '500MB (CG)', price: 487, validity: '7days' },
-    { name: '1GB (CG)', price: 780, validity: '7days' },
-    { name: '1.5GB (CG)', price: 975, validity: '7days' },
-    { name: '2GB (CG)', price: 1462, validity: '30days' },
-    { name: '3GB (CG)', price: 1950, validity: '30days' },
-    { name: '4GB (CG)', price: 2437, validity: '30days' },
-    { name: '6GB (CG)', price: 2437, validity: '7days' },
-    { name: '10GB (CG)', price: 3900, validity: '30days' },
-  ],
-  GLO: [
-    { name: '200MB (CG)', price: 83, validity: '14days' },
-    { name: '500MB (CG)', price: 198, validity: '30days' },
-    { name: '1GB (CG)', price: 395, validity: '30days' },
-    { name: '3GB (CG)', price: 1185, validity: '30days' },
-    { name: '5GB (CG)', price: 1975, validity: '30days' },
-    { name: '10GB (CG)', price: 3950, validity: '30days' },
-  ],
-  '9MOBILE': [
-    { name: '500MB (SME)', price: 180, validity: '30days' },
-    { name: '1GB (SME)', price: 360, validity: '30days' },
-    { name: '2GB (SME)', price: 720, validity: '30days' },
-    { name: '10GB (SME)', price: 3600, validity: '30days' },
-  ],
-};
-
 export default function BuyDataPage() {
   const [selectedNetwork, setSelectedNetwork] = useState('MTN');
+  const [plans, setPlans] = useState([]);
+  const [fetchingPlans, setFetchingPlans] = useState(false);
+  const [plansError, setPlansError] = useState('');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [phone, setPhone] = useState('');
   const [user, setUser] = useState(null);
@@ -68,6 +28,38 @@ export default function BuyDataPage() {
       setUser(JSON.parse(stored));
     }
   }, []);
+
+  // Fetch live plans from backend when selected network changes
+  useEffect(() => {
+    let isMounted = true;
+    setSelectedPlan(null);
+    setFetchingPlans(true);
+    setPlansError('');
+
+    fetch(`/api/data/plans?network=${encodeURIComponent(selectedNetwork.toLowerCase())}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.plans)) {
+          setPlans(data.plans);
+        } else {
+          setPlans([]);
+          setPlansError(data.message || 'Failed to load plans from VTpass');
+        }
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setPlans([]);
+        setPlansError('Network error loading plans');
+      })
+      .finally(() => {
+        if (isMounted) setFetchingPlans(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedNetwork]);
 
   const handlePurchase = async (e) => {
     e.preventDefault();
@@ -94,7 +86,8 @@ export default function BuyDataPage() {
           network: selectedNetwork,
           phone,
           planName: selectedPlan.name,
-          amount: selectedPlan.price,
+          planId: selectedPlan.variation_code,
+          amount: parseFloat(selectedPlan.variation_amount || 0),
         }),
       });
 
@@ -109,7 +102,7 @@ export default function BuyDataPage() {
       } else {
         setStatusMsg({ type: 'error', text: data.message || 'Data purchase failed' });
       }
-    } catch (err) {
+    } catch {
       setStatusMsg({ type: 'error', text: 'Transaction error occurred' });
     } finally {
       setLoading(false);
@@ -155,9 +148,8 @@ export default function BuyDataPage() {
                   type="button"
                   onClick={() => {
                     setSelectedNetwork(net.id);
-                    setSelectedPlan(null);
                   }}
-                  className={`p-3 rounded-2xl border flex flex-col items-center gap-2 transition font-bold text-sm ${
+                  className={`p-3 rounded-2xl border flex flex-col items-center gap-2 transition font-bold text-sm cursor-pointer ${
                     isSelected
                       ? `${net.color} border-2 shadow-md`
                       : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
@@ -178,28 +170,54 @@ export default function BuyDataPage() {
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             2. Choose Data Plan ({selectedNetwork})
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
-            {dataPlans[selectedNetwork]?.map((plan, idx) => {
-              const isSelected = selectedPlan?.name === plan.name;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setSelectedPlan(plan)}
-                  className={`p-4 rounded-2xl border cursor-pointer flex items-center justify-between transition ${
-                    isSelected
-                      ? 'bg-orange-50 border-orange-500 text-blue-900 shadow-sm'
-                      : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <div>
-                    <p className="font-bold text-sm text-blue-900">{plan.name}</p>
-                    <p className="text-xs text-gray-500">Validity: {plan.validity}</p>
+
+          {fetchingPlans && (
+            <div className="p-8 text-center text-sm text-gray-500 flex flex-col items-center justify-center gap-2 bg-gray-50 rounded-2xl border border-gray-200">
+              <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
+              <span>Loading live {selectedNetwork} data plans from VTpass...</span>
+            </div>
+          )}
+
+          {plansError && !fetchingPlans && (
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{plansError}</span>
+            </div>
+          )}
+
+          {!fetchingPlans && !plansError && plans.length === 0 && (
+            <div className="p-6 text-center text-xs text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
+              No data plans currently available for {selectedNetwork}.
+            </div>
+          )}
+
+          {!fetchingPlans && plans.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+              {plans.map((plan, idx) => {
+                const isSelected = selectedPlan?.variation_code === plan.variation_code;
+                const priceNum = parseFloat(plan.variation_amount || 0);
+                return (
+                  <div
+                    key={plan.variation_code || idx}
+                    onClick={() => setSelectedPlan(plan)}
+                    className={`p-4 rounded-2xl border cursor-pointer flex items-center justify-between transition ${
+                      isSelected
+                        ? 'bg-orange-50 border-orange-500 text-blue-900 shadow-sm'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="pr-2">
+                      <p className="font-bold text-sm text-blue-900">{plan.name}</p>
+                      <p className="text-[11px] text-gray-500">Code: {plan.variation_code}</p>
+                    </div>
+                    <span className="text-base font-extrabold text-orange-600 shrink-0">
+                      ₦{priceNum.toLocaleString()}
+                    </span>
                   </div>
-                  <span className="text-base font-extrabold text-orange-600">₦{plan.price}</span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Step 3: Phone Number */}
@@ -225,14 +243,16 @@ export default function BuyDataPage() {
           {selectedPlan && (
             <div className="flex justify-between items-center text-sm font-semibold">
               <span className="text-gray-500">Total Amount:</span>
-              <span className="text-2xl font-extrabold text-orange-600">₦{selectedPlan.price}</span>
+              <span className="text-2xl font-extrabold text-orange-600">
+                ₦{parseFloat(selectedPlan.variation_amount || 0).toLocaleString()}
+              </span>
             </div>
           )}
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full py-4 rounded-xl btn-orange text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg"
+            disabled={loading || fetchingPlans}
+            className="w-full py-4 rounded-xl btn-orange text-base flex items-center justify-center gap-2 disabled:opacity-50 transition shadow-lg cursor-pointer"
           >
             {loading ? 'Processing Data Top-Up...' : 'Confirm & Buy Data'} <ArrowRight className="w-5 h-5" />
           </button>

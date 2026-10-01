@@ -49,8 +49,82 @@ export function calculateProfit(type, sellingPrice, quantity = 1) {
   return { costPrice, profit };
 }
 
+export function resolveDataServiceID(network) {
+  const net = (network || '').toLowerCase().trim();
+
+  if (net.includes('mtn')) return 'mtn-data';
+  if (net.includes('airtel')) return 'airtel-data';
+  if (net.includes('glo')) return 'glo-data';
+  if (net.includes('9mobile') || net.includes('etisalat')) return 'etisalat-data';
+
+  throw new Error(`Unsupported data network: ${network}`);
+}
+
+export async function getValidatedDataPlan(network, planId) {
+  if (!network) {
+    return { valid: false, error: 'Network is required' };
+  }
+  if (!planId) {
+    return { valid: false, error: 'Invalid data plan selected.' };
+  }
+
+  let serviceID;
+  try {
+    serviceID = resolveDataServiceID(network);
+  } catch {
+    return { valid: false, error: 'Invalid data plan selected.' };
+  }
+
+  const baseUrl = process.env.VTPASS_API_URL || 'https://sandbox.vtpass.com/api';
+  const targetUrl = `${baseUrl}/service-variations?serviceID=${encodeURIComponent(serviceID)}`;
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (process.env.VTPASS_API_KEY) headers['api-key'] = process.env.VTPASS_API_KEY;
+  if (process.env.VTPASS_PUBLIC_KEY) headers['public-key'] = process.env.VTPASS_PUBLIC_KEY;
+  if (process.env.VTPASS_SECRET_KEY) headers['secret-key'] = process.env.VTPASS_SECRET_KEY;
+
+  try {
+    const res = await fetch(targetUrl, {
+      method: 'GET',
+      headers,
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      return { valid: false, error: `Failed to fetch variations from provider (status ${res.status})` };
+    }
+
+    const data = await res.json();
+    if (data.response_description !== '000' && data.code !== '000') {
+      return { valid: false, error: data.response_description || 'Failed to retrieve plans from provider' };
+    }
+
+    const variations = data.content?.variations || [];
+    const matchedPlan = variations.find((v) => v.variation_code === planId);
+
+    if (!matchedPlan) {
+      return { valid: false, error: 'Invalid data plan selected.' };
+    }
+
+    const authoritativePrice = parseFloat(matchedPlan.variation_amount);
+    if (isNaN(authoritativePrice) || authoritativePrice <= 0) {
+      return { valid: false, error: 'Invalid plan price from provider.' };
+    }
+
+    return {
+      valid: true,
+      serviceID,
+      plan: matchedPlan,
+      authoritativePrice,
+      planName: matchedPlan.name,
+    };
+  } catch (err) {
+    return { valid: false, error: err.message || 'Error communicating with provider' };
+  }
+}
+
 export async function processDataPurchase({ network, phone, planId, amount, requestId }) {
-  const { costPrice, profit } = calculateProfit('data', amount);
+  const serviceID = resolveDataServiceID(network);
 
   if (VTPASS_API_KEY && VTPASS_SECRET_KEY) {
     try {
@@ -63,7 +137,7 @@ export async function processDataPurchase({ network, phone, planId, amount, requ
         },
         body: JSON.stringify({
           request_id: requestId,
-          serviceID: network.toLowerCase(),
+          serviceID: serviceID,
           billersCode: phone,
           variation_code: planId,
           amount: amount,
@@ -72,27 +146,67 @@ export async function processDataPurchase({ network, phone, planId, amount, requ
       });
       const data = await response.json();
       if (data.code === '000') {
+        const transaction = data.content?.transactions;
+
+        const vtpassAmount = Number(transaction?.amount ?? transaction?.unit_price ?? amount);
+
+        let vtpassCommission = 0;
+        if (transaction?.commission != null && !isNaN(Number(transaction.commission))) {
+          vtpassCommission = Number(transaction.commission);
+        } else if (transaction?.commission_details?.amount != null && !isNaN(Number(transaction.commission_details.amount))) {
+          vtpassCommission = Number(transaction.commission_details.amount);
+        }
+
+        const vtpassTotalAmount = Number(
+          transaction?.total_amount ?? (vtpassAmount - vtpassCommission)
+        );
+
+        const vtpassTransactionId = transaction?.transactionId || requestId;
+        const commissionDetails = transaction?.commission_details || null;
+
         return { 
           success: true, 
-          transactionId: data.content?.transactions?.transactionId || requestId, 
-          costPrice, 
-          profit,
+          transactionId: vtpassTransactionId,
+          vtpassTransactionId,
+          vtpassAmount,
+          vtpassCommission,
+          vtpassTotalAmount,
+          commissionDetails,
+          costPrice: vtpassTotalAmount, 
+          profit: vtpassCommission,
           response: data 
         };
       } else {
-        return { success: false, error: data.response_description || 'Transaction failed', response: data };
+        return { 
+          success: false, 
+          error: data.response_description || 'Transaction failed', 
+          costPrice: 0,
+          profit: 0,
+          response: data 
+        };
       }
     } catch (err) {
-      return { success: false, error: err.message };
+      return { 
+        success: false, 
+        error: err.message,
+        costPrice: 0,
+        profit: 0,
+      };
     }
   }
 
   // Simulation mode for instant testing when credentials are not yet set
+  const simAmount = Number(amount);
   return {
     success: true,
     transactionId: `ST_DATA_${Date.now()}`,
-    costPrice,
-    profit,
+    vtpassTransactionId: `ST_DATA_${Date.now()}`,
+    vtpassAmount: simAmount,
+    vtpassCommission: 0,
+    vtpassTotalAmount: simAmount,
+    commissionDetails: null,
+    costPrice: simAmount,
+    profit: 0,
     simulated: true,
     message: `Data top-up of ${amount} for ${phone} on ${network} was delivered successfully.`,
   };

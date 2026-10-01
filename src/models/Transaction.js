@@ -1,4 +1,4 @@
-﻿import mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import { LocalTransaction } from '@/lib/local-store';
 
 const TransactionSchema = new mongoose.Schema(
@@ -23,6 +23,12 @@ const TransactionSchema = new mongoose.Schema(
     newBalance: { type: Number, default: 0 },
     status: { type: String, enum: ['success', 'pending', 'failed'], default: 'pending' },
     details: { type: Object, default: {} },
+    vtpassAmount: { type: Number },
+    vtpassCommission: { type: Number },
+    vtpassTotalAmount: { type: Number },
+    vtpassTransactionId: { type: String },
+    variationCode: { type: String },
+    commissionDetails: { type: Object },
   },
   { timestamps: true }
 );
