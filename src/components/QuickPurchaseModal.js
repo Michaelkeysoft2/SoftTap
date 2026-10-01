@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { 
   X, Check, AlertCircle, ShieldCheck, ArrowRight, Copy, 
@@ -13,33 +13,6 @@ const networks = [
   { id: 'Glo', name: 'Glo', logo: '/logos/glo.jpg' },
   { id: '9mobile', name: '9mobile', logo: '/logos/9mobile.jpg' },
 ];
-
-const dataPlans = {
-  MTN: [
-    { id: 'mtn_sme_500mb', name: '500MB SME (30 Days)', price: 160 },
-    { id: 'mtn_sme_1gb', name: '1GB SME (30 Days)', price: 290 },
-    { id: 'mtn_sme_2gb', name: '2GB SME (30 Days)', price: 580 },
-    { id: 'mtn_sme_3gb', name: '3GB SME (30 Days)', price: 870 },
-    { id: 'mtn_sme_5gb', name: '5GB SME (30 Days)', price: 1450 },
-    { id: 'mtn_sme_10gb', name: '10GB SME (30 Days)', price: 2900 },
-  ],
-  Airtel: [
-    { id: 'airtel_cg_500mb', name: '500MB Corporate (30 Days)', price: 180 },
-    { id: 'airtel_cg_1gb', name: '1GB Corporate (30 Days)', price: 320 },
-    { id: 'airtel_cg_2gb', name: '2GB Corporate (30 Days)', price: 640 },
-    { id: 'airtel_cg_5gb', name: '5GB Corporate (30 Days)', price: 1600 },
-  ],
-  Glo: [
-    { id: 'glo_cg_1gb', name: '1GB Corporate (30 Days)', price: 280 },
-    { id: 'glo_cg_2gb', name: '2GB Corporate (30 Days)', price: 560 },
-    { id: 'glo_cg_5gb', name: '5GB Corporate (30 Days)', price: 1400 },
-  ],
-  '9mobile': [
-    { id: '9mob_sme_1gb', name: '1GB SME (30 Days)', price: 260 },
-    { id: '9mob_sme_2gb', name: '2GB SME (30 Days)', price: 520 },
-    { id: '9mob_sme_5gb', name: '5GB SME (30 Days)', price: 1300 },
-  ]
-};
 
 const tvProviders = [
   { 
@@ -104,7 +77,10 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
   
   // Data state
   const [selectedNetwork, setSelectedNetwork] = useState(initialData.selectedNetwork || networks[0]);
-  const [selectedDataPlan, setSelectedDataPlan] = useState(initialData.selectedDataPlan || dataPlans.MTN[1]);
+  const [dataPlans, setDataPlans] = useState([]);
+  const [fetchingPlans, setFetchingPlans] = useState(false);
+  const [plansError, setPlansError] = useState('');
+  const [selectedDataPlan, setSelectedDataPlan] = useState(initialData.selectedDataPlan || null);
   const [dataPhone, setDataPhone] = useState(initialData.dataPhone || '');
 
   // Airtime state
@@ -136,17 +112,85 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
   const [deliveryResult, setDeliveryResult] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Sync state when modal is opened from direct hero widget
-  useState(() => {
-    if (initialTab) setActiveTab(initialTab);
-  });
+  // Sync state when modal is opened or initialData changes
+  useEffect(() => {
+    if (isOpen) {
+      if (initialTab) setActiveTab(initialTab);
+      if (initialData.selectedNetwork) setSelectedNetwork(initialData.selectedNetwork);
+      if (initialData.selectedDataPlan) setSelectedDataPlan(initialData.selectedDataPlan);
+      if (initialData.dataPhone) setDataPhone(initialData.dataPhone);
+      if (initialData.airtimeNetwork) setAirtimeNetwork(initialData.airtimeNetwork);
+      if (initialData.airtimePhone) setAirtimePhone(initialData.airtimePhone);
+      if (initialData.airtimeAmount) setAirtimeAmount(initialData.airtimeAmount);
+      if (initialData.selectedTvProvider) setSelectedTvProvider(initialData.selectedTvProvider);
+      if (initialData.selectedTvPlan) setSelectedTvPlan(initialData.selectedTvPlan);
+      if (initialData.smartcardNo) setSmartcardNo(initialData.smartcardNo);
+      if (initialData.selectedDisco) setSelectedDisco(initialData.selectedDisco);
+      if (initialData.meterType) setMeterType(initialData.meterType);
+      if (initialData.meterNo) setMeterNo(initialData.meterNo);
+      if (initialData.electricityAmount) setElectricityAmount(initialData.electricityAmount);
+      if (initialData.selectedExam) setSelectedExam(initialData.selectedExam);
+      if (initialData.pinQuantity) setPinQuantity(initialData.pinQuantity);
+      if (initialData.customerEmail) setCustomerEmail(initialData.customerEmail);
+    }
+  }, [isOpen, initialTab, initialData]);
+
+  // Fetch live VTpass data plans whenever selected network or modal open status changes
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    setFetchingPlans(true);
+    setPlansError('');
+
+    const netKey = (selectedNetwork.id || selectedNetwork.name || 'mtn').toLowerCase();
+    fetch(`/api/data/plans?network=${encodeURIComponent(netKey)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.plans) && data.plans.length > 0) {
+          const mapped = data.plans.map((p) => ({
+            id: p.variation_code,
+            variation_code: p.variation_code,
+            name: p.name,
+            price: parseFloat(p.variation_amount),
+            variation_amount: p.variation_amount,
+            fixedPrice: p.fixedPrice,
+          }));
+          setDataPlans(mapped);
+          setSelectedDataPlan((prev) => {
+            if (prev) {
+              const prevCode = prev.variation_code || prev.id;
+              const found = mapped.find((p) => (p.variation_code || p.id) === prevCode);
+              if (found) return found;
+            }
+            return mapped[0];
+          });
+        } else {
+          setDataPlans([]);
+          setSelectedDataPlan(null);
+          setPlansError(data.message || 'No plans available');
+        }
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDataPlans([]);
+        setSelectedDataPlan(null);
+        setPlansError('Network error loading plans');
+      })
+      .finally(() => {
+        if (isMounted) setFetchingPlans(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, selectedNetwork]);
 
   if (!isOpen) return null;
 
   const handleNetworkChange = (net) => {
     setSelectedNetwork(net);
-    const plans = dataPlans[net.id] || [];
-    setSelectedDataPlan(plans[0] || null);
+    setSelectedDataPlan(null);
   };
 
   const handleTvProviderChange = (provider) => {
@@ -165,18 +209,24 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
     };
 
     if (activeTab === 'data') {
+      if (!selectedDataPlan) {
+        setErrorMsg('Please select a data bundle plan');
+        setLoading(false);
+        return;
+      }
       if (!dataPhone || dataPhone.length < 11) {
         setErrorMsg('Please enter a valid 11-digit phone number');
         setLoading(false);
         return;
       }
+      const planCode = selectedDataPlan.variation_code || selectedDataPlan.id;
       payload = {
         ...payload,
         network: selectedNetwork.name,
         phone: dataPhone,
-        planId: selectedDataPlan.id,
+        planId: planCode,
         planName: selectedDataPlan.name,
-        amount: selectedDataPlan.price,
+        amount: selectedDataPlan.price || Number(selectedDataPlan.variation_amount),
       };
     } else if (activeTab === 'airtime') {
       if (!airtimePhone || airtimePhone.length < 11) {
@@ -424,18 +474,25 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">2. Choose Data Plan</label>
                     <select
-                      value={selectedDataPlan?.id || ''}
+                      value={selectedDataPlan?.variation_code || selectedDataPlan?.id || ''}
                       onChange={(e) => {
-                        const plan = (dataPlans[selectedNetwork.id] || []).find((p) => p.id === e.target.value);
-                        setSelectedDataPlan(plan);
+                        const plan = dataPlans.find((p) => (p.variation_code || p.id) === e.target.value);
+                        setSelectedDataPlan(plan || null);
                       }}
+                      disabled={fetchingPlans || dataPlans.length === 0}
                       className="w-full px-3.5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-semibold text-gray-800 focus:outline-none focus:border-orange-500"
                     >
-                      {(dataPlans[selectedNetwork.id] || []).map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} — ₦{p.price.toLocaleString()}
-                        </option>
-                      ))}
+                      {fetchingPlans ? (
+                        <option value="">Loading plans from VTpass...</option>
+                      ) : dataPlans.length === 0 ? (
+                        <option value="">{plansError || 'No plans available'}</option>
+                      ) : (
+                        dataPlans.map((p) => (
+                          <option key={p.variation_code || p.id} value={p.variation_code || p.id}>
+                            {p.name} — ₦{Number(p.price || p.variation_amount).toLocaleString()}
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
 

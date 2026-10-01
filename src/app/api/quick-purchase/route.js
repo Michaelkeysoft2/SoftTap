@@ -6,7 +6,8 @@ import {
   processAirtimePurchase, 
   processTVSubscription, 
   processElectricityBill, 
-  processExamPin 
+  processExamPin,
+  getValidatedDataPlan,
 } from '@/lib/vtu-service';
 
 export async function POST(req) {
@@ -31,11 +32,12 @@ export async function POST(req) {
       quantity
     } = body;
 
-    if (!serviceType || !amount) {
+    if (!serviceType || (serviceType !== 'data' && !amount)) {
       return NextResponse.json({ success: false, message: 'Missing required parameters' }, { status: 400 });
     }
 
-    const price = parseFloat(amount);
+    const price = parseFloat(amount) || 0;
+    let finalAmount = price;
     const requestId = paymentReference || `ST_QP_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     let result = null;
     let serviceDisplayName = '';
@@ -43,12 +45,39 @@ export async function POST(req) {
     let providerName = '';
 
     switch (serviceType) {
-      case 'data':
+      case 'data': {
+        if (!network || !phone || !planId) {
+          return NextResponse.json({ 
+            success: false, 
+            message: 'Missing required parameters: network, phone, and planId are required' 
+          }, { status: 400 });
+        }
+
+        // Validate plan against VTpass variations (never trust browser-supplied amount)
+        const planValidation = await getValidatedDataPlan(network, planId);
+        if (!planValidation.valid) {
+          return NextResponse.json({
+            success: false,
+            message: planValidation.error || 'Invalid data plan selected.',
+          }, { status: 400 });
+        }
+
+        const authoritativePrice = planValidation.authoritativePrice;
+        const resolvedPlanName = planValidation.planName || planName || planId;
+        finalAmount = authoritativePrice;
         recipientIdentifier = phone;
         providerName = network;
-        serviceDisplayName = `${network} Data (${planName || planId})`;
-        result = await processDataPurchase({ network, phone, planId, amount: price, requestId });
+        serviceDisplayName = `${network} Data (${resolvedPlanName})`;
+
+        result = await processDataPurchase({ 
+          network, 
+          phone, 
+          planId, 
+          amount: authoritativePrice, 
+          requestId 
+        });
         break;
+      }
 
       case 'airtime':
         recipientIdentifier = phone;
@@ -97,8 +126,7 @@ export async function POST(req) {
         reference: requestId,
         serviceName: serviceDisplayName,
         networkOrProvider: providerName,
-        recipient: recipientIdentifier,
-        amount: price,
+        amount: finalAmount,
         costPrice: result.costPrice || 0,
         profit: result.profit || 0,
         paymentMethod: 'paystack_direct',
@@ -106,6 +134,12 @@ export async function POST(req) {
         customerPhone: customerPhone || phone || recipientIdentifier,
         status: 'success',
         details: result,
+        vtpassAmount: result.vtpassAmount,
+        vtpassCommission: result.vtpassCommission,
+        vtpassTotalAmount: result.vtpassTotalAmount,
+        vtpassTransactionId: result.vtpassTransactionId,
+        variationCode: serviceType === 'data' ? planId : undefined,
+        commissionDetails: result.commissionDetails,
       });
     } catch (dbErr) {
       console.error('Failed to log transaction in DB:', dbErr);

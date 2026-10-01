@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { 
   Wifi, Signal, Tv, Lightbulb, BookOpen, ArrowRight, 
@@ -13,33 +13,6 @@ const networks = [
   { id: 'Glo', name: 'Glo', logo: '/logos/glo.jpg', color: 'border-green-400 bg-green-50 text-green-900' },
   { id: '9mobile', name: '9mobile', logo: '/logos/9mobile.jpg', color: 'border-emerald-400 bg-emerald-50 text-emerald-900' },
 ];
-
-const dataPlans = {
-  MTN: [
-    { id: 'mtn_sme_500mb', name: '500MB SME (30 Days)', price: 160 },
-    { id: 'mtn_sme_1gb', name: '1GB SME (30 Days)', price: 290 },
-    { id: 'mtn_sme_2gb', name: '2GB SME (30 Days)', price: 580 },
-    { id: 'mtn_sme_3gb', name: '3GB SME (30 Days)', price: 870 },
-    { id: 'mtn_sme_5gb', name: '5GB SME (30 Days)', price: 1450 },
-    { id: 'mtn_sme_10gb', name: '10GB SME (30 Days)', price: 2900 },
-  ],
-  Airtel: [
-    { id: 'airtel_cg_500mb', name: '500MB Corporate (30 Days)', price: 180 },
-    { id: 'airtel_cg_1gb', name: '1GB Corporate (30 Days)', price: 320 },
-    { id: 'airtel_cg_2gb', name: '2GB Corporate (30 Days)', price: 640 },
-    { id: 'airtel_cg_5gb', name: '5GB Corporate (30 Days)', price: 1600 },
-  ],
-  Glo: [
-    { id: 'glo_cg_1gb', name: '1GB Corporate (30 Days)', price: 280 },
-    { id: 'glo_cg_2gb', name: '2GB Corporate (30 Days)', price: 560 },
-    { id: 'glo_cg_5gb', name: '5GB Corporate (30 Days)', price: 1400 },
-  ],
-  '9mobile': [
-    { id: '9mob_sme_1gb', name: '1GB SME (30 Days)', price: 260 },
-    { id: '9mob_sme_2gb', name: '2GB SME (30 Days)', price: 520 },
-    { id: '9mob_sme_5gb', name: '5GB SME (30 Days)', price: 1300 },
-  ]
-};
 
 const tvProviders = [
   { 
@@ -98,8 +71,55 @@ export default function InstantRechargeCard({ onProceed }) {
 
   // Data state
   const [selectedNetwork, setSelectedNetwork] = useState(networks[0]);
-  const [selectedDataPlan, setSelectedDataPlan] = useState(dataPlans.MTN[1]);
+  const [dataPlans, setDataPlans] = useState([]);
+  const [fetchingPlans, setFetchingPlans] = useState(false);
+  const [plansError, setPlansError] = useState('');
+  const [selectedDataPlan, setSelectedDataPlan] = useState(null);
   const [dataPhone, setDataPhone] = useState('');
+
+  // Fetch live VTpass data plans whenever selected network changes
+  useEffect(() => {
+    let isMounted = true;
+    setFetchingPlans(true);
+    setPlansError('');
+    setSelectedDataPlan(null);
+
+    const netKey = (selectedNetwork.id || selectedNetwork.name || 'mtn').toLowerCase();
+    fetch(`/api/data/plans?network=${encodeURIComponent(netKey)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.plans) && data.plans.length > 0) {
+          const mapped = data.plans.map((p) => ({
+            id: p.variation_code,
+            variation_code: p.variation_code,
+            name: p.name,
+            price: parseFloat(p.variation_amount),
+            variation_amount: p.variation_amount,
+            fixedPrice: p.fixedPrice,
+          }));
+          setDataPlans(mapped);
+          setSelectedDataPlan(mapped[0]);
+        } else {
+          setDataPlans([]);
+          setSelectedDataPlan(null);
+          setPlansError(data.message || 'No plans available');
+        }
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDataPlans([]);
+        setSelectedDataPlan(null);
+        setPlansError('Network error loading plans');
+      })
+      .finally(() => {
+        if (isMounted) setFetchingPlans(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedNetwork]);
 
   // Airtime state
   const [airtimeNetwork, setAirtimeNetwork] = useState(networks[0]);
@@ -124,8 +144,6 @@ export default function InstantRechargeCard({ onProceed }) {
 
   const handleNetworkChange = (net) => {
     setSelectedNetwork(net);
-    const plans = dataPlans[net.id] || [];
-    setSelectedDataPlan(plans[0] || null);
   };
 
   const handleTvProviderChange = (prov) => {
@@ -246,18 +264,25 @@ export default function InstantRechargeCard({ onProceed }) {
                 2. Select Data Bundle
               </label>
               <select
-                value={selectedDataPlan?.id || ''}
+                value={selectedDataPlan?.variation_code || selectedDataPlan?.id || ''}
                 onChange={(e) => {
-                  const plan = (dataPlans[selectedNetwork.id] || []).find((p) => p.id === e.target.value);
-                  setSelectedDataPlan(plan);
+                  const plan = dataPlans.find((p) => (p.variation_code || p.id) === e.target.value);
+                  setSelectedDataPlan(plan || null);
                 }}
+                disabled={fetchingPlans || dataPlans.length === 0}
                 className="w-full px-3.5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-semibold text-gray-800 focus:outline-none focus:border-orange-500"
               >
-                {(dataPlans[selectedNetwork.id] || []).map((plan) => (
-                  <option key={plan.id} value={plan.id}>
-                    {plan.name} — ₦{plan.price.toLocaleString()}
-                  </option>
-                ))}
+                {fetchingPlans ? (
+                  <option value="">Loading plans from VTpass...</option>
+                ) : dataPlans.length === 0 ? (
+                  <option value="">{plansError || 'No plans available'}</option>
+                ) : (
+                  dataPlans.map((plan) => (
+                    <option key={plan.variation_code || plan.id} value={plan.variation_code || plan.id}>
+                      {plan.name} — ₦{Number(plan.price || plan.variation_amount).toLocaleString()}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
 
