@@ -34,7 +34,7 @@ export async function POST(req) {
       referralCode,
       referredBy: referral || null,
       walletBalance: 0.0,
-      role: email.toLowerCase() === 'michaelkeysofy@gmail.com' ? 'admin' : 'user',
+      role: 'user',
     });
 
     const userObj = {

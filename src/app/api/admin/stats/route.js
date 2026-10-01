@@ -1,10 +1,19 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
 import Transaction from '@/models/Transaction';
+import { verifyAdminRequest } from '@/lib/admin-auth';
 
 export async function GET(req) {
   try {
+    const auth = await verifyAdminRequest(req);
+    if (!auth.valid) {
+      return NextResponse.json(
+        { success: false, message: auth.error || 'Unauthorized: Admin privileges required' },
+        { status: 401 }
+      );
+    }
+
     await connectToDatabase();
 
     const users = await User.find().sort({ createdAt: -1 }).select('-password');
