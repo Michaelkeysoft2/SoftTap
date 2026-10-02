@@ -1,10 +1,16 @@
-// scripts/create-admin.js
-// Safe CLI tool to create or promote an admin account directly in the SoftTap database
-
 const path = require('path');
 const fs = require('fs');
+const readline = require('readline');
+const dns = require('dns');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+
+// Configure public DNS resolvers to ensure Node can resolve MongoDB Atlas SRV
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {
+  // ignore
+}
 
 // Load .env.local if present
 const envPath = path.join(__dirname, '..', '.env.local');
@@ -20,22 +26,37 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const email = process.argv[2];
-const password = process.argv[3];
-const name = process.argv[4] || 'Admin';
+const emailArg = process.argv[2];
+let passwordArg = process.argv[3];
+const nameArg = process.argv[4] || 'Admin';
 
-if (!email || !password) {
-  console.log('Usage: node scripts/create-admin.js <email> <password> [name]');
-  console.log('Example: node scripts/create-admin.js owner@softtap.com myStrongPassword "SoftTap Owner"');
-  process.exit(1);
+function promptPassword(promptText) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    rl.question(promptText, (answer) => {
+      rl.close();
+      resolve(answer.trim());
+    });
+  });
 }
 
 async function run() {
+  const email = emailArg || process.env.ADMIN_INIT_EMAIL || await promptPassword('Enter admin email: ');
+  const password = passwordArg || process.env.ADMIN_INIT_PASSWORD || await promptPassword('Enter admin password: ');
+  const name = nameArg;
+
+  if (!email || !password) {
+    console.log('Error: Both email and password are required.');
+    process.exit(1);
+  }
   const MONGODB_URI = process.env.MONGODB_URI;
 
   if (MONGODB_URI) {
     try {
-      await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 });
+      await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 8000 });
       console.log('Connected to MongoDB Atlas.');
 
       const UserSchema = new mongoose.Schema({
@@ -57,7 +78,9 @@ async function run() {
         user.role = 'admin';
         user.password = hashedPassword;
         await user.save();
-        console.log(`Successfully promoted existing user "${normalizedEmail}" to role: "admin"!`);
+        console.log(`ADMIN_ALREADY_EXISTED_PROMOTED: true`);
+        console.log(`EMAIL: ${normalizedEmail}`);
+        console.log(`ROLE: admin`);
       } else {
         user = await User.create({
           firstName: name,
@@ -67,12 +90,14 @@ async function run() {
           password: hashedPassword,
           role: 'admin',
         });
-        console.log(`Successfully created new admin user "${normalizedEmail}" with role: "admin"!`);
+        console.log(`ADMIN_CREATED: true`);
+        console.log(`EMAIL: ${normalizedEmail}`);
+        console.log(`ROLE: admin`);
       }
       process.exit(0);
     } catch (err) {
-      console.log('Remote MongoDB unavailable or offline:', err.message);
-      console.log('Falling back to local data store...');
+      console.error('Remote MongoDB error:', err.message);
+      process.exit(1);
     }
   }
 
