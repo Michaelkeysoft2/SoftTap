@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import FAQAccordion from '@/components/FAQAccordion';
 import QuickPurchaseModal from '@/components/QuickPurchaseModal';
 import InstantRechargeCard from '@/components/InstantRechargeCard';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Wifi, Tv, Lightbulb, Signal, LogIn, UserPlus,
   Shield, Target, Users, CheckCircle2, Star,
@@ -73,10 +73,29 @@ export default function Home() {
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false);
   const [quickBuyTab, setQuickBuyTab] = useState('data');
   const [quickBuyInitialData, setQuickBuyInitialData] = useState({});
+  const [pricingTab, setPricingTab] = useState('tv');
+  const [liveTvPlans, setLiveTvPlans] = useState({
+    dstv: [],
+    gotv: [],
+    startimes: [],
+  });
 
-  const openQuickBuy = (tab) => {
+  useEffect(() => {
+    ['dstv', 'gotv', 'startimes'].forEach((prov) => {
+      fetch(`/api/tv/plans?serviceID=${prov}`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success && Array.isArray(d.plans) && d.plans.length > 0) {
+            setLiveTvPlans((prev) => ({ ...prev, [prov]: d.plans }));
+          }
+        })
+        .catch(() => {});
+    });
+  }, []);
+
+  const openQuickBuy = (tab, initialData = {}) => {
     setQuickBuyTab(tab);
-    setQuickBuyInitialData({});
+    setQuickBuyInitialData(initialData || {});
     setIsQuickBuyOpen(true);
   };
 
@@ -458,7 +477,7 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-blue-900 text-lg">DStv</h4>
               <p className="text-gray-500 text-sm">All bouquets — Compact, Compact+, Premium</p>
-              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
+              <button onClick={() => openQuickBuy('tv', { selectedTvProvider: { id: 'dstv', name: 'DSTV' } })} className="btn-orange w-full">Subscribe</button>
             </div>
 
             <div className="brand-card p-6 flex flex-col items-center gap-4">
@@ -467,7 +486,7 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-blue-900 text-lg">GOtv</h4>
               <p className="text-gray-500 text-sm">GOtv Lite, Value, Plus, Max</p>
-              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
+              <button onClick={() => openQuickBuy('tv', { selectedTvProvider: { id: 'gotv', name: 'GOTV' } })} className="btn-orange w-full">Subscribe</button>
             </div>
 
             <div className="brand-card p-6 flex flex-col items-center gap-4">
@@ -476,7 +495,7 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-blue-900 text-lg">StarTimes</h4>
               <p className="text-gray-500 text-sm">Nova, Basic, Smart, Classic, Super</p>
-              <button onClick={() => openQuickBuy('tv')} className="btn-orange w-full">Subscribe</button>
+              <button onClick={() => openQuickBuy('tv', { selectedTvProvider: { id: 'startimes', name: 'StarTimes' } })} className="btn-orange w-full">Subscribe</button>
             </div>
           </div>
 
@@ -489,148 +508,255 @@ export default function Home() {
       <section id="pricing" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-10 text-center">
           <p className="section-tag">Pricing</p>
-          <h2 className="section-heading text-2xl sm:text-3xl md:text-4xl mt-2">Check Our Prices Below</h2>
+          <h2 className="section-heading text-2xl sm:text-3xl md:text-4xl mt-2">Check Our Official Prices Below</h2>
+          <p className="text-gray-500 text-sm max-w-2xl mx-auto mt-2">
+            100% synchronized with official provider tariffs. Direct wholesale and retail parity with zero hidden markups.
+          </p>
           <div className="section-divider" />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12 text-left">
-            {/* MTN SME Data */}
-            <PriceCard
-              title="MTN SME Data"
-              dot="bg-yellow-400"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '500MB (SME)', price: '₦485', dur: '7days' },
-                { size: '1GB (SME)', price: '₦776', dur: '7days' },
-                { size: '1.5GB (SME)', price: '₦970', dur: '7days' },
-                { size: '2GB (SME)', price: '₦1,455', dur: '30days' },
-                { size: '3.5GB (SME)', price: '₦2,425', dur: '30days' },
-                { size: '6GB (SME)', price: '₦2,425', dur: '7days' },
-                { size: '7GB (SME)', price: '₦3,395', dur: '30days' },
-                { size: '10GB (SME)', price: '₦4,365', dur: '30days' },
-              ]}
-            />
-            {/* MTN CG Lite */}
-            <PriceCard
-              title="MTN CG Lite Data (SME 2.0)"
-              dot="bg-yellow-400"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '50MB (CG_LITE)', price: '₦19', dur: '30days' },
-                { size: '150MB (CG_LITE)', price: '₦79', dur: '30days' },
-                { size: '250MB (CG_LITE)', price: '₦94', dur: '30days' },
-                { size: '500MB (CG_LITE)', price: '₦109', dur: '30days' },
-                { size: '1GB (CG_LITE)', price: '₦219', dur: '30days' },
-                { size: '2GB (CG_LITE)', price: '₦438', dur: '30days' },
-                { size: '3GB (CG_LITE)', price: '₦658', dur: '30days' },
-                { size: '5GB (CG_LITE)', price: '₦1,097', dur: '30days' },
-                { size: '10GB (CG_LITE)', price: '₦2,194', dur: '30days' },
-              ]}
-            />
-            {/* MTN CG Data */}
-            <PriceCard
-              title="MTN CG Data"
-              dot="bg-yellow-400"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '500MB (CG)', price: '₦360', dur: '7days' },
-                { size: '1GB (CG)', price: '₦500', dur: '7days' },
-                { size: '2GB (CG)', price: '₦1,000', dur: '7days' },
-                { size: '3GB (CG)', price: '₦1,500', dur: '7days' },
-                { size: '5GB (CG)', price: '₦2,400', dur: '30days' },
-              ]}
-            />
-            {/* AIRTEL Corporate Gifting */}
-            <PriceCard
-              title="AIRTEL Corporate Gifting"
-              dot="bg-red-500"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/airtel.jpg" alt="Airtel" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '500MB (CG)', price: '₦487', dur: '7days' },
-                { size: '1GB (CG)', price: '₦780', dur: '7days' },
-                { size: '1.5GB (CG)', price: '₦975', dur: '7days' },
-                { size: '2GB (CG)', price: '₦1,462', dur: '30days' },
-                { size: '3GB (CG)', price: '₦1,950', dur: '30days' },
-                { size: '4GB (CG)', price: '₦2,437', dur: '30days' },
-                { size: '10GB (CG)', price: '₦3,900', dur: '30days' },
-                { size: '25GB (CG)', price: '₦7,800', dur: '30days' },
-              ]}
-            />
-            {/* GLO CG */}
-            <PriceCard
-              title="GLO Corporate Gifting Data"
-              dot="bg-green-500"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/glo.jpg" alt="Glo" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '200MB (CG)', price: '₦83', dur: '14days' },
-                { size: '500MB (CG)', price: '₦198', dur: '30days' },
-                { size: '1GB (CG)', price: '₦395', dur: '30days' },
-                { size: '3GB (CG)', price: '₦1,185', dur: '30days' },
-                { size: '5GB (CG)', price: '₦1,975', dur: '30days' },
-                { size: '10GB (CG)', price: '₦3,950', dur: '30days' },
-              ]}
-            />
-            {/* 9mobile SME */}
-            <PriceCard
-              title="9mobile SME Data"
-              dot="bg-teal-400"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/9mobile.jpg" alt="9mobile" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '500MB (SME)', price: '₦180', dur: '30days' },
-                { size: '1GB (SME)', price: '₦360', dur: '30days' },
-                { size: '2GB (SME)', price: '₦720', dur: '30days' },
-                { size: '10GB (SME)', price: '₦3,600', dur: '30days' },
-              ]}
-            />
-            {/* Airtel Direct */}
-            <PriceCard
-              title="Airtel Direct Gifting"
-              dot="bg-red-500"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/airtel.jpg" alt="Airtel" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '150MB (Awoof)', price: '₦55', dur: '1day' },
-                { size: '600MB (Awoof)', price: '₦202', dur: '2days' },
-                { size: '1.5GB (Awoof)', price: '₦395', dur: '1day' },
-                { size: '2GB (Direct)', price: '₦1,462', dur: '30days' },
-                { size: '13GB (Direct)', price: '₦4,875', dur: '30days' },
-                { size: '25GB (Direct)', price: '₦7,800', dur: '30days' },
-              ]}
-            />
-            {/* MTN Direct */}
-            <PriceCard
-              title="MTN Direct Gifting"
-              dot="bg-yellow-400"
-              onBuy={() => openQuickBuy('data')}
-              logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
-              items={[
-                { size: '1GB (Awoof)', price: '₦485', dur: '1day' },
-                { size: '3.2GB (Awoof)', price: '₦970', dur: '2days' },
-                { size: '11GB (Awoof)', price: '₦3,395', dur: '7days' },
-                { size: '1GB (Direct)', price: '₦776', dur: '7days' },
-                { size: '2GB (Direct)', price: '₦1,455', dur: '30days' },
-                { size: '10GB (Direct)', price: '₦4,365', dur: '30days' },
-              ]}
-            />
-            {/* API Result Checker */}
-            <PriceCard
-              title="Result Checker Pins"
-              dot="bg-blue-500"
-              onBuy={() => openQuickBuy('exam_pin')}
-              logo={<BookOpen className="w-6 h-6 text-blue-700" />}
-              items={[
-                { size: 'WAEC', price: '₦3,300' },
-                { size: 'NECO', price: '₦1,150' },
-                { size: 'NABTEB', price: '₦830' },
-                { size: 'NBAIS', price: '₦900' },
-              ]}
-            />
+          {/* Pricing Category Navigation Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-8">
+            <button
+              type="button"
+              onClick={() => setPricingTab('tv')}
+              className={`px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
+                pricingTab === 'tv'
+                  ? 'bg-blue-900 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Tv className="w-4 h-4" /> Cable TV Subscriptions
+            </button>
+            <button
+              type="button"
+              onClick={() => setPricingTab('data')}
+              className={`px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
+                pricingTab === 'data'
+                  ? 'bg-blue-900 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Wifi className="w-4 h-4" /> Mobile Data Bundles
+            </button>
+            <button
+              type="button"
+              onClick={() => setPricingTab('utilities')}
+              className={`px-5 py-2.5 rounded-full text-sm font-bold transition flex items-center gap-2 cursor-pointer ${
+                pricingTab === 'utilities'
+                  ? 'bg-blue-900 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Lightbulb className="w-4 h-4" /> Utilities &amp; Exam PINs
+            </button>
           </div>
+
+          {/* Tab 1: CABLE TV PRICING */}
+          {pricingTab === 'tv' && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 text-left animate-in fade-in duration-200">
+              {/* DStv */}
+              <PriceCard
+                title="DStv Packages"
+                dot="bg-blue-600"
+                btnText="Subscribe DStv"
+                onBuy={() => openQuickBuy('tv', { selectedTvProvider: { id: 'dstv', name: 'DSTV' } })}
+                logo={<Image src="/logos/dstv.jpg" alt="DStv" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={
+                  liveTvPlans.dstv.length > 0
+                    ? liveTvPlans.dstv.slice(0, 8).map((p) => ({
+                        size: p.name,
+                        price: `₦${Number(p.variation_amount).toLocaleString()}`,
+                        dur: 'Monthly',
+                      }))
+                    : [
+                        { size: 'DStv Padi', price: '₦1,850', dur: 'Monthly' },
+                        { size: 'DStv Yanga', price: '₦2,565', dur: 'Monthly' },
+                        { size: 'DStv Confam', price: '₦4,615', dur: 'Monthly' },
+                        { size: 'DStv Compact', price: '₦7,900', dur: 'Monthly' },
+                        { size: 'DStv Compact Plus', price: '₦12,500', dur: 'Monthly' },
+                        { size: 'DStv Premium', price: '₦18,400', dur: 'Monthly' },
+                        { size: 'DStv Asia', price: '₦6,200', dur: 'Monthly' },
+                      ]
+                }
+              />
+
+              {/* GOtv */}
+              <PriceCard
+                title="GOtv Packages"
+                dot="bg-green-600"
+                btnText="Subscribe GOtv"
+                onBuy={() => openQuickBuy('tv', { selectedTvProvider: { id: 'gotv', name: 'GOTV' } })}
+                logo={<Image src="/logos/gotv.jpg" alt="GOtv" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={
+                  liveTvPlans.gotv.length > 0
+                    ? liveTvPlans.gotv.map((p) => ({
+                        size: p.name,
+                        price: `₦${Number(p.variation_amount).toLocaleString()}`,
+                      }))
+                    : [
+                        { size: 'GOtv Lite', price: '₦410', dur: 'Monthly' },
+                        { size: 'GOtv Jinja', price: '₦1,640', dur: 'Monthly' },
+                        { size: 'GOtv Jolli', price: '₦2,460', dur: 'Monthly' },
+                        { size: 'GOtv Max', price: '₦3,600', dur: 'Monthly' },
+                        { size: 'GOtv Lite (3 Months)', price: '₦1,080', dur: '3 Months' },
+                        { size: 'GOtv Lite (1 Year)', price: '₦3,180', dur: '1 Year' },
+                      ]
+                }
+              />
+
+              {/* StarTimes */}
+              <PriceCard
+                title="StarTimes Packages"
+                dot="bg-red-600"
+                btnText="Subscribe StarTimes"
+                onBuy={() => openQuickBuy('tv', { selectedTvProvider: { id: 'startimes', name: 'StarTimes' } })}
+                logo={<Image src="/logos/startimes.svg" alt="StarTimes" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={
+                  liveTvPlans.startimes.length > 0
+                    ? liveTvPlans.startimes.slice(0, 8).map((p) => ({
+                        size: p.name,
+                        price: `₦${Number(p.variation_amount).toLocaleString()}`,
+                      }))
+                    : [
+                        { size: 'Nova Bouquet', price: '₦900', dur: '1 Month' },
+                        { size: 'Basic Bouquet', price: '₦1,700', dur: '1 Month' },
+                        { size: 'Smart Bouquet', price: '₦2,200', dur: '1 Month' },
+                        { size: 'Classic Bouquet', price: '₦2,500', dur: '1 Month' },
+                        { size: 'Super Bouquet', price: '₦4,200', dur: '1 Month' },
+                        { size: 'Nova Weekly', price: '₦300', dur: '1 Week' },
+                        { size: 'Basic Weekly', price: '₦600', dur: '1 Week' },
+                        { size: 'Classic Weekly', price: '₦900', dur: '1 Week' },
+                      ]
+                }
+              />
+            </div>
+          )}
+
+          {/* Tab 2: DATA PRICING */}
+          {pricingTab === 'data' && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10 text-left animate-in fade-in duration-200">
+              {/* MTN Data */}
+              <PriceCard
+                title="MTN Data Plans"
+                dot="bg-yellow-400"
+                btnText="Buy MTN Data"
+                onBuy={() => openQuickBuy('data', { selectedNetwork: { id: 'MTN', name: 'MTN' } })}
+                logo={<Image src="/logos/mtn.jpg" alt="MTN" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={[
+                  { size: '1GB SME', price: '₦280', dur: '30days' },
+                  { size: '2GB SME', price: '₦560', dur: '30days' },
+                  { size: '3GB SME', price: '₦840', dur: '30days' },
+                  { size: '5GB SME', price: '₦1,400', dur: '30days' },
+                  { size: '10GB SME', price: '₦2,800', dur: '30days' },
+                  { size: '1.5GB Monthly', price: '₦1,000', dur: '30days' },
+                  { size: '2GB Monthly', price: '₦1,200', dur: '30days' },
+                  { size: '3GB Monthly', price: '₦1,500', dur: '30days' },
+                ]}
+              />
+
+              {/* Airtel Data */}
+              <PriceCard
+                title="Airtel Data Plans"
+                dot="bg-red-500"
+                btnText="Buy Airtel Data"
+                onBuy={() => openQuickBuy('data', { selectedNetwork: { id: 'Airtel', name: 'Airtel' } })}
+                logo={<Image src="/logos/airtel.jpg" alt="Airtel" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={[
+                  { size: '1GB Corporate', price: '₦280', dur: '30days' },
+                  { size: '2GB Corporate', price: '₦560', dur: '30days' },
+                  { size: '5GB Corporate', price: '₦1,400', dur: '30days' },
+                  { size: '10GB Corporate', price: '₦2,800', dur: '30days' },
+                  { size: '1.5GB Direct', price: '₦1,000', dur: '30days' },
+                  { size: '3GB Direct', price: '₦1,500', dur: '30days' },
+                  { size: '4.5GB Direct', price: '₦2,000', dur: '30days' },
+                ]}
+              />
+
+              {/* Glo Data */}
+              <PriceCard
+                title="Glo Data Plans"
+                dot="bg-green-500"
+                btnText="Buy Glo Data"
+                onBuy={() => openQuickBuy('data', { selectedNetwork: { id: 'Glo', name: 'Glo' } })}
+                logo={<Image src="/logos/glo.jpg" alt="Glo" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={[
+                  { size: '1GB Corporate', price: '₦260', dur: '30days' },
+                  { size: '2GB Corporate', price: '₦520', dur: '30days' },
+                  { size: '3GB Corporate', price: '₦780', dur: '30days' },
+                  { size: '5GB Corporate', price: '₦1,300', dur: '30days' },
+                  { size: '10GB Corporate', price: '₦2,600', dur: '30days' },
+                ]}
+              />
+
+              {/* 9mobile Data */}
+              <PriceCard
+                title="9mobile Data Plans"
+                dot="bg-teal-400"
+                btnText="Buy 9mobile Data"
+                onBuy={() => openQuickBuy('data', { selectedNetwork: { id: '9mobile', name: '9mobile' } })}
+                logo={<Image src="/logos/9mobile.jpg" alt="9mobile" width={32} height={32} className="w-8 h-8 object-contain rounded" />}
+                items={[
+                  { size: '1GB SME', price: '₦240', dur: '30days' },
+                  { size: '2GB SME', price: '₦480', dur: '30days' },
+                  { size: '5GB SME', price: '₦1,200', dur: '30days' },
+                  { size: '10GB SME', price: '₦2,400', dur: '30days' },
+                ]}
+              />
+            </div>
+          )}
+
+          {/* Tab 3: UTILITIES & EXAM PINS */}
+          {pricingTab === 'utilities' && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10 text-left animate-in fade-in duration-200">
+              {/* Exam Pins */}
+              <PriceCard
+                title="Exam Checker PINs"
+                dot="bg-blue-500"
+                btnText="Buy PINs"
+                onBuy={() => openQuickBuy('exam_pin')}
+                logo={<BookOpen className="w-6 h-6 text-blue-700" />}
+                items={[
+                  { size: 'WAEC Result Checker', price: '₦3,320', dur: 'Instant e-Pin' },
+                  { size: 'NECO Result Token', price: '₦1,170', dur: 'Instant Token' },
+                  { size: 'NABTEB Result Checker', price: '₦850', dur: 'Instant e-Pin' },
+                  { size: 'NBAIS e-Pin', price: '₦920', dur: 'Instant Token' },
+                ]}
+              />
+
+              {/* Electricity */}
+              <PriceCard
+                title="Electricity Bill Payment"
+                dot="bg-amber-500"
+                btnText="Pay Electricity"
+                onBuy={() => openQuickBuy('electricity')}
+                logo={<Lightbulb className="w-6 h-6 text-amber-600" />}
+                items={[
+                  { size: 'Ikeja Electric (IKEDC)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Eko Electric (EKEDC)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Abuja Electric (AEDC)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Ibadan Electric (IBEDC)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Enugu Electric (EEDC)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Kano Electric (KEDCO)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                  { size: 'Port Harcourt (PHED)', price: 'Official Tariff', dur: 'Prepaid / Postpaid' },
+                ]}
+              />
+
+              {/* Airtime */}
+              <PriceCard
+                title="Airtime Top-Up"
+                dot="bg-emerald-500"
+                btnText="Recharge Airtime"
+                onBuy={() => openQuickBuy('airtime')}
+                logo={<Signal className="w-6 h-6 text-emerald-600" />}
+                items={[
+                  { size: 'MTN Airtime', price: 'Face Value', dur: 'Instant Top-Up' },
+                  { size: 'Airtel Airtime', price: 'Face Value', dur: 'Instant Top-Up' },
+                  { size: 'Glo Airtime', price: 'Face Value', dur: 'Instant Top-Up' },
+                  { size: '9mobile Airtime', price: 'Face Value', dur: 'Instant Top-Up' },
+                ]}
+              />
+            </div>
+          )}
         </div>
       </section>
 
@@ -856,7 +982,7 @@ export default function Home() {
 }
 
 /* ======= PRICE CARD COMPONENT ======= */
-function PriceCard({ title, dot, logo, items, onBuy }) {
+function PriceCard({ title, dot, logo, items, onBuy, btnText = 'Buy Now' }) {
   return (
     <div className="brand-card p-6 flex flex-col justify-between">
       <div>
@@ -875,7 +1001,7 @@ function PriceCard({ title, dot, logo, items, onBuy }) {
         </ul>
       </div>
       <button onClick={onBuy} className="btn-orange w-full mt-4">
-        Buy Now
+        {btnText}
       </button>
     </div>
   );

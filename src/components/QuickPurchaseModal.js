@@ -15,42 +15,9 @@ const networks = [
 ];
 
 const tvProviders = [
-  { 
-    id: 'DSTV', 
-    name: 'DSTV', 
-    logo: '/logos/dstv.jpg',
-    plans: [
-      { id: 'dstv_padi', name: 'DSTV Padi', price: 3600 },
-      { id: 'dstv_yanga', name: 'DSTV Yanga', price: 5100 },
-      { id: 'dstv_confam', name: 'DSTV Confam', price: 9300 },
-      { id: 'dstv_compact', name: 'DSTV Compact', price: 15700 },
-      { id: 'dstv_premium', name: 'DSTV Premium', price: 37000 }
-    ]
-  },
-  { 
-    id: 'GOTV', 
-    name: 'GOTV', 
-    logo: '/logos/gotv.jpg',
-    plans: [
-      { id: 'gotv_smallie', name: 'GOTV Smallie', price: 1500 },
-      { id: 'gotv_jinja', name: 'GOTV Jinja', price: 3300 },
-      { id: 'gotv_jolli', name: 'GOTV Jolli', price: 4850 },
-      { id: 'gotv_max', name: 'GOTV Max', price: 7200 },
-      { id: 'gotv_supa', name: 'GOTV Supa+', price: 15700 }
-    ]
-  },
-  { 
-    id: 'STARTIMES', 
-    name: 'StarTimes', 
-    logo: '/logos/startimes.svg',
-    plans: [
-      { id: 'st_nova', name: 'Nova Bouquet', price: 1700 },
-      { id: 'st_basic', name: 'Basic Bouquet', price: 3300 },
-      { id: 'st_smart', name: 'Smart Bouquet', price: 4300 },
-      { id: 'st_classic', name: 'Classic Bouquet', price: 5500 },
-      { id: 'st_super', name: 'Super Bouquet', price: 7500 }
-    ]
-  },
+  { id: 'dstv', name: 'DSTV', logo: '/logos/dstv.jpg' },
+  { id: 'gotv', name: 'GOTV', logo: '/logos/gotv.jpg' },
+  { id: 'startimes', name: 'StarTimes', logo: '/logos/startimes.svg' },
 ];
 
 const discos = [
@@ -90,7 +57,10 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
 
   // TV state
   const [selectedTvProvider, setSelectedTvProvider] = useState(initialData.selectedTvProvider || tvProviders[0]);
-  const [selectedTvPlan, setSelectedTvPlan] = useState(initialData.selectedTvPlan || tvProviders[0].plans[0]);
+  const [tvPlans, setTvPlans] = useState([]);
+  const [fetchingTvPlans, setFetchingTvPlans] = useState(false);
+  const [tvPlansError, setTvPlansError] = useState('');
+  const [selectedTvPlan, setSelectedTvPlan] = useState(initialData.selectedTvPlan || null);
   const [smartcardNo, setSmartcardNo] = useState(initialData.smartcardNo || '');
 
   // Electricity state
@@ -186,6 +156,57 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
     };
   }, [isOpen, selectedNetwork]);
 
+  // Fetch live VTpass TV bouquets whenever selected provider or modal open changes
+  useEffect(() => {
+    if (!isOpen) return;
+    let isMounted = true;
+    setFetchingTvPlans(true);
+    setTvPlansError('');
+
+    const providerKey = (selectedTvProvider.id || selectedTvProvider.name || 'dstv').toLowerCase();
+    fetch(`/api/tv/plans?serviceID=${encodeURIComponent(providerKey)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && Array.isArray(data.plans) && data.plans.length > 0) {
+          const mapped = data.plans.map((p) => ({
+            id: p.variation_code,
+            variation_code: p.variation_code,
+            name: p.name,
+            price: parseFloat(p.variation_amount),
+            variation_amount: p.variation_amount,
+            fixedPrice: p.fixedPrice,
+          }));
+          setTvPlans(mapped);
+          setSelectedTvPlan((prev) => {
+            if (prev) {
+              const prevCode = prev.variation_code || prev.id;
+              const found = mapped.find((p) => (p.variation_code || p.id) === prevCode);
+              if (found) return found;
+            }
+            return mapped[0];
+          });
+        } else {
+          setTvPlans([]);
+          setSelectedTvPlan(null);
+          setTvPlansError(data.message || 'No bouquets available');
+        }
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setTvPlans([]);
+        setSelectedTvPlan(null);
+        setTvPlansError('Network error loading TV bouquets');
+      })
+      .finally(() => {
+        if (isMounted) setFetchingTvPlans(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, selectedTvProvider]);
+
   if (!isOpen) return null;
 
   const handleNetworkChange = (net) => {
@@ -195,7 +216,7 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
 
   const handleTvProviderChange = (provider) => {
     setSelectedTvProvider(provider);
-    setSelectedTvPlan(provider.plans[0]);
+    setSelectedTvPlan(null);
   };
 
   const handleQuickCheckout = async (e) => {
@@ -246,18 +267,24 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
         amount: parseFloat(airtimeAmount),
       };
     } else if (activeTab === 'tv') {
+      if (!selectedTvPlan) {
+        setErrorMsg('Please select a bouquet package');
+        setLoading(false);
+        return;
+      }
       if (!smartcardNo || smartcardNo.length < 8) {
         setErrorMsg('Please enter a valid Smartcard / IUC number');
         setLoading(false);
         return;
       }
+      const planCode = selectedTvPlan.variation_code || selectedTvPlan.id;
       payload = {
         ...payload,
-        provider: selectedTvProvider.name,
+        provider: selectedTvProvider.id || selectedTvProvider.name,
         smartcardNo: smartcardNo,
-        planId: selectedTvPlan.id,
+        planId: planCode,
         planName: selectedTvPlan.name,
-        amount: selectedTvPlan.price,
+        amount: selectedTvPlan.price || Number(selectedTvPlan.variation_amount),
       };
     } else if (activeTab === 'electricity') {
       if (!meterNo || meterNo.length < 9) {
@@ -594,18 +621,25 @@ export default function QuickPurchaseModal({ isOpen, onClose, initialTab = 'data
                   <div>
                     <label className="block text-xs font-bold text-gray-700 uppercase mb-1.5">2. Choose Bouquet Plan</label>
                     <select
-                      value={selectedTvPlan?.id || ''}
+                      value={selectedTvPlan?.variation_code || selectedTvPlan?.id || ''}
                       onChange={(e) => {
-                        const plan = selectedTvProvider.plans.find((p) => p.id === e.target.value);
-                        setSelectedTvPlan(plan);
+                        const plan = tvPlans.find((p) => (p.variation_code || p.id) === e.target.value);
+                        setSelectedTvPlan(plan || null);
                       }}
+                      disabled={fetchingTvPlans || tvPlans.length === 0}
                       className="w-full px-3.5 py-3 rounded-xl bg-gray-50 border border-gray-200 text-sm font-semibold text-gray-800 focus:outline-none focus:border-orange-500"
                     >
-                      {selectedTvProvider.plans.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} — ₦{p.price.toLocaleString()}
-                        </option>
-                      ))}
+                      {fetchingTvPlans ? (
+                        <option value="">Loading live bouquets from VTpass...</option>
+                      ) : tvPlans.length === 0 ? (
+                        <option value="">{tvPlansError || 'No bouquets available'}</option>
+                      ) : (
+                        tvPlans.map((p) => (
+                          <option key={p.variation_code || p.id} value={p.variation_code || p.id}>
+                            {p.name} — ₦{Number(p.price || p.variation_amount).toLocaleString()}
+                          </option>
+                        ))
+                      )}
                     </select>
                   </div>
 
