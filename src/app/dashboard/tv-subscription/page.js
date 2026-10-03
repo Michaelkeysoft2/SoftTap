@@ -19,10 +19,40 @@ export default function TVSubscriptionPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [smartcardNo, setSmartcardNo] = useState('');
+  const [verifyingCard, setVerifyingCard] = useState(false);
+  const [verifiedCustomer, setVerifiedCustomer] = useState('');
+  const [verificationError, setVerificationError] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: '', text: '' });
   const dropdownRef = useRef(null);
+
+  const handleVerifySmartcard = async () => {
+    if (!smartcardNo || smartcardNo.trim().length < 8) {
+      setVerificationError('Enter at least 8 digits to verify');
+      return;
+    }
+    setVerifyingCard(true);
+    setVerificationError('');
+    setVerifiedCustomer('');
+    try {
+      const res = await fetch('/api/merchant-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ billersCode: smartcardNo.trim(), serviceID: selectedProvider.id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.customerName) {
+        setVerifiedCustomer(data.customerName);
+      } else {
+        setVerificationError(data.message || 'Verification could not confirm name');
+      }
+    } catch {
+      setVerificationError('Network error checking smartcard');
+    } finally {
+      setVerifyingCard(false);
+    }
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem('softtap_user');
@@ -336,20 +366,59 @@ export default function TVSubscriptionPage() {
 
         {/* Step 3: Smartcard / IUC */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-            3. Smartcard / IUC Number
-          </label>
+          <div className="flex justify-between items-center">
+            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              3. Smartcard / IUC Number
+            </label>
+            {smartcardNo.trim().length >= 8 && (
+              <button
+                type="button"
+                onClick={handleVerifySmartcard}
+                disabled={verifyingCard}
+                className="text-xs font-bold text-orange-600 hover:text-orange-700 underline flex items-center gap-1 cursor-pointer"
+              >
+                {verifyingCard && <Loader2 className="w-3 h-3 animate-spin" />}
+                {verifyingCard ? 'Verifying...' : 'Verify Smartcard'}
+              </button>
+            )}
+          </div>
           <div className="relative">
             <CreditCard className="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="e.g. 1029384756"
               value={smartcardNo}
-              onChange={(e) => setSmartcardNo(e.target.value)}
+              onChange={(e) => {
+                setSmartcardNo(e.target.value);
+                setVerifiedCustomer('');
+                setVerificationError('');
+              }}
               required
-              className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-base font-medium placeholder-gray-400 focus:outline-none focus:border-orange-500"
+              className="w-full pl-11 pr-24 py-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-800 text-base font-medium placeholder-gray-400 focus:outline-none focus:border-orange-500"
             />
+            <button
+              type="button"
+              onClick={handleVerifySmartcard}
+              disabled={verifyingCard || smartcardNo.trim().length < 8}
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-blue-900 text-white rounded-lg text-xs font-bold disabled:opacity-40 hover:bg-blue-800 transition cursor-pointer"
+            >
+              {verifyingCard ? 'Checking...' : 'Verify'}
+            </button>
           </div>
+
+          {verifiedCustomer && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-green-800 text-xs font-bold flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-green-600 shrink-0" />
+              <span>Decoder Account Name: {verifiedCustomer}</span>
+            </div>
+          )}
+
+          {verificationError && (
+            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs font-medium flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>{verificationError}</span>
+            </div>
+          )}
         </div>
 
         {/* Total & Submit Button */}
