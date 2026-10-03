@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { Wifi, Phone, ArrowRight, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
+import { Wifi, Phone, ArrowRight, ShieldCheck, AlertCircle, Loader2, ChevronDown, Check, Search } from 'lucide-react';
 
 const networks = [
   { id: 'MTN', name: 'MTN', logo: '/logos/mtn.jpg', color: 'border-yellow-400 bg-yellow-50 text-yellow-800' },
@@ -17,10 +17,13 @@ export default function BuyDataPage() {
   const [fetchingPlans, setFetchingPlans] = useState(false);
   const [plansError, setPlansError] = useState('');
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const [phone, setPhone] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState({ type: '', text: '' });
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('softtap_user');
@@ -29,10 +32,25 @@ export default function BuyDataPage() {
     }
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   // Fetch live plans from backend when selected network changes
   useEffect(() => {
     let isMounted = true;
     setSelectedPlan(null);
+    setIsDropdownOpen(false);
+    setSearchTerm('');
     setFetchingPlans(true);
     setPlansError('');
 
@@ -166,15 +184,15 @@ export default function BuyDataPage() {
         </div>
 
         {/* Step 2: Select Data Plan */}
-        <div className="space-y-3">
+        <div className="space-y-3" ref={dropdownRef}>
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             2. Choose Data Plan ({selectedNetwork})
           </label>
 
           {fetchingPlans && (
-            <div className="p-8 text-center text-sm text-gray-500 flex flex-col items-center justify-center gap-2 bg-gray-50 rounded-2xl border border-gray-200">
-              <Loader2 className="w-6 h-6 animate-spin text-orange-500" />
-              <span>Loading live {selectedNetwork} data plans from VTpass...</span>
+            <div className="p-4 text-center text-sm text-gray-500 flex items-center justify-center gap-2 bg-gray-50 rounded-2xl border border-gray-200">
+              <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+              <span>Loading live {selectedNetwork} data plans...</span>
             </div>
           )}
 
@@ -186,36 +204,122 @@ export default function BuyDataPage() {
           )}
 
           {!fetchingPlans && !plansError && plans.length === 0 && (
-            <div className="p-6 text-center text-xs text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
+            <div className="p-4 text-center text-xs text-gray-500 bg-gray-50 rounded-2xl border border-gray-200">
               No data plans currently available for {selectedNetwork}.
             </div>
           )}
 
           {!fetchingPlans && plans.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
-              {plans.map((plan, idx) => {
-                const isSelected = selectedPlan?.variation_code === plan.variation_code;
-                const priceNum = parseFloat(plan.variation_amount || 0);
-                return (
-                  <div
-                    key={plan.variation_code || idx}
-                    onClick={() => setSelectedPlan(plan)}
-                    className={`p-4 rounded-2xl border cursor-pointer flex items-center justify-between transition ${
-                      isSelected
-                        ? 'bg-orange-50 border-orange-500 text-blue-900 shadow-sm'
-                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className="pr-2">
-                      <p className="font-bold text-sm text-blue-900">{plan.name}</p>
-                      <p className="text-[11px] text-gray-500">Code: {plan.variation_code}</p>
+            <div className="relative">
+              {/* Dropdown Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                className={`w-full p-3.5 rounded-xl border text-left flex items-center justify-between transition cursor-pointer ${
+                  isDropdownOpen
+                    ? 'border-orange-500 ring-2 ring-orange-200 bg-white'
+                    : selectedPlan
+                    ? 'border-orange-400 bg-orange-50/50'
+                    : 'border-gray-200 bg-gray-50 hover:bg-gray-100/70'
+                }`}
+              >
+                <div className="flex-1 pr-2 min-w-0">
+                  {selectedPlan ? (
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-sm text-blue-950 truncate">
+                        {selectedPlan.name}
+                      </span>
+                      <span className="text-sm font-extrabold text-orange-600 shrink-0">
+                        ₦{parseFloat(selectedPlan.variation_amount || 0).toLocaleString()}
+                      </span>
                     </div>
-                    <span className="text-base font-extrabold text-orange-600 shrink-0">
-                      ₦{priceNum.toLocaleString()}
-                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">Select a data bundle...</span>
+                  )}
+                </div>
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200 ${
+                    isDropdownOpen ? 'rotate-180 text-orange-500' : ''
+                  }`}
+                />
+              </button>
+
+              {/* Collapsible Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute z-30 mt-2 w-full bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
+                  {/* Search / Filter Input */}
+                  <div className="p-2 border-b border-gray-100 bg-gray-50/70">
+                    <div className="relative">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Search bundle (e.g. 1GB, 2GB, monthly)..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-gray-200 bg-white text-gray-800 focus:outline-none focus:border-orange-500"
+                        autoFocus
+                      />
+                    </div>
                   </div>
-                );
-              })}
+
+                  {/* Scrollable Options List */}
+                  <div className="max-h-60 overflow-y-auto divide-y divide-gray-50">
+                    {plans
+                      .filter((p) => {
+                        if (!searchTerm.trim()) return true;
+                        const term = searchTerm.toLowerCase();
+                        return (
+                          p.name?.toLowerCase().includes(term) ||
+                          p.variation_code?.toLowerCase().includes(term)
+                        );
+                      })
+                      .map((plan, idx) => {
+                        const isSelected = selectedPlan?.variation_code === plan.variation_code;
+                        const priceNum = parseFloat(plan.variation_amount || 0);
+
+                        return (
+                          <div
+                            key={plan.variation_code || idx}
+                            onClick={() => {
+                              setSelectedPlan(plan);
+                              setIsDropdownOpen(false);
+                              setSearchTerm('');
+                            }}
+                            className={`p-3.5 flex items-center justify-between cursor-pointer transition text-left hover:bg-orange-50/60 ${
+                              isSelected ? 'bg-orange-50 font-bold' : ''
+                            }`}
+                          >
+                            <div className="flex-1 pr-3 min-w-0">
+                              <p className={`text-sm truncate ${isSelected ? 'text-orange-900 font-bold' : 'text-gray-800'}`}>
+                                {plan.name}
+                              </p>
+                              <p className="text-[11px] text-gray-400">Code: {plan.variation_code}</p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="text-sm font-extrabold text-orange-600">
+                                ₦{priceNum.toLocaleString()}
+                              </span>
+                              {isSelected && <Check className="w-4 h-4 text-orange-600" />}
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                    {plans.filter((p) => {
+                      if (!searchTerm.trim()) return true;
+                      const term = searchTerm.toLowerCase();
+                      return (
+                        p.name?.toLowerCase().includes(term) ||
+                        p.variation_code?.toLowerCase().includes(term)
+                      );
+                    }).length === 0 && (
+                      <div className="p-4 text-center text-xs text-gray-400">
+                        No bundles match &ldquo;{searchTerm}&rdquo;
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

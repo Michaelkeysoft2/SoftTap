@@ -123,6 +123,65 @@ export async function getValidatedDataPlan(network, planId) {
   }
 }
 
+export async function getValidatedTVPlan(provider, planId) {
+  if (!provider) {
+    return { valid: false, error: 'Provider is required' };
+  }
+  if (!planId) {
+    return { valid: false, error: 'Invalid TV bouquet selected.' };
+  }
+
+  const serviceID = provider.toLowerCase().trim();
+  const baseUrl = process.env.VTPASS_API_URL || 'https://sandbox.vtpass.com/api';
+  const targetUrl = `${baseUrl}/service-variations?serviceID=${encodeURIComponent(serviceID)}`;
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (process.env.VTPASS_API_KEY) headers['api-key'] = process.env.VTPASS_API_KEY;
+  if (process.env.VTPASS_PUBLIC_KEY) headers['public-key'] = process.env.VTPASS_PUBLIC_KEY;
+  if (process.env.VTPASS_SECRET_KEY) headers['secret-key'] = process.env.VTPASS_SECRET_KEY;
+
+  try {
+    const res = await fetch(targetUrl, {
+      method: 'GET',
+      headers,
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      return { valid: false, error: `Failed to fetch TV variations from provider (status ${res.status})` };
+    }
+
+    const data = await res.json();
+    if (data.response_description !== '000' && data.code !== '000') {
+      return { valid: false, error: data.response_description || 'Failed to retrieve TV bouquets from provider' };
+    }
+
+    const variations = data.content?.variations || [];
+    const matchedPlan = variations.find(
+      (v) => v.variation_code === planId || v.name?.toLowerCase() === planId?.toLowerCase()
+    );
+
+    if (!matchedPlan) {
+      return { valid: false, error: 'Invalid TV bouquet selected.' };
+    }
+
+    const authoritativePrice = parseFloat(matchedPlan.variation_amount);
+    if (isNaN(authoritativePrice) || authoritativePrice <= 0) {
+      return { valid: false, error: 'Invalid bouquet price from provider.' };
+    }
+
+    return {
+      valid: true,
+      serviceID,
+      plan: matchedPlan,
+      authoritativePrice,
+      planName: matchedPlan.name,
+    };
+  } catch (err) {
+    return { valid: false, error: err.message || 'Error communicating with provider' };
+  }
+}
+
 export async function processDataPurchase({ network, phone, planId, amount, requestId }) {
   const serviceID = resolveDataServiceID(network);
 
@@ -213,7 +272,7 @@ export async function processDataPurchase({ network, phone, planId, amount, requ
 }
 
 export async function processAirtimePurchase({ network, phone, amount, requestId }) {
-  const { costPrice, profit } = calculateProfit('airtime', amount);
+  const { costPrice: fallbackCost, profit: fallbackProfit } = calculateProfit('airtime', amount);
 
   if (VTPASS_API_KEY && VTPASS_SECRET_KEY) {
     try {
@@ -234,33 +293,68 @@ export async function processAirtimePurchase({ network, phone, amount, requestId
       });
       const data = await response.json();
       if (data.code === '000') {
+        const transaction = data.content?.transactions;
+        const vtpassAmount = Number(transaction?.amount ?? transaction?.unit_price ?? amount);
+
+        let vtpassCommission = 0;
+        if (transaction?.commission != null && !isNaN(Number(transaction.commission))) {
+          vtpassCommission = Number(transaction.commission);
+        } else if (transaction?.commission_details?.amount != null && !isNaN(Number(transaction.commission_details.amount))) {
+          vtpassCommission = Number(transaction.commission_details.amount);
+        } else {
+          vtpassCommission = fallbackProfit;
+        }
+
+        const vtpassTotalAmount = Number(
+          transaction?.total_amount ?? (vtpassAmount - vtpassCommission)
+        );
+
+        const vtpassTransactionId = transaction?.transactionId || requestId;
+        const commissionDetails = transaction?.commission_details || null;
+
         return { 
           success: true, 
-          transactionId: data.content?.transactions?.transactionId || requestId, 
-          costPrice, 
-          profit,
-          response: data 
+          transactionId: vtpassTransactionId,
+          vtpassTransactionId,
+          vtpassAmount,
+          vtpassCommission,
+          vtpassTotalAmount,
+          commissionDetails,
+          costPrice: vtpassTotalAmount,
+          profit: vtpassCommission,
+          response: data
         };
       } else {
-        return { success: false, error: data.response_description || 'Airtime purchase failed', response: data };
+        return {
+          success: false,
+          error: data.response_description || 'Airtime purchase failed',
+          costPrice: 0,
+          profit: 0,
+          response: data
+        };
       }
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: err.message, costPrice: 0, profit: 0 };
     }
   }
 
   return {
     success: true,
     transactionId: `ST_AIR_${Date.now()}`,
-    costPrice,
-    profit,
+    vtpassTransactionId: `ST_AIR_${Date.now()}`,
+    vtpassAmount: Number(amount),
+    vtpassCommission: fallbackProfit,
+    vtpassTotalAmount: fallbackCost,
+    commissionDetails: null,
+    costPrice: fallbackCost,
+    profit: fallbackProfit,
     simulated: true,
     message: `Airtime top-up of ₦${amount} to ${phone} (${network}) was successful.`,
   };
 }
 
 export async function processTVSubscription({ provider, smartcardNo, planId, amount, requestId }) {
-  const { costPrice, profit } = calculateProfit('tv', amount);
+  const { costPrice: fallbackCost, profit: fallbackProfit } = calculateProfit('tv', amount);
 
   if (VTPASS_API_KEY && VTPASS_SECRET_KEY) {
     try {
@@ -282,33 +376,68 @@ export async function processTVSubscription({ provider, smartcardNo, planId, amo
       });
       const data = await response.json();
       if (data.code === '000') {
+        const transaction = data.content?.transactions;
+        const vtpassAmount = Number(transaction?.amount ?? transaction?.unit_price ?? amount);
+
+        let vtpassCommission = 0;
+        if (transaction?.commission != null && !isNaN(Number(transaction.commission))) {
+          vtpassCommission = Number(transaction.commission);
+        } else if (transaction?.commission_details?.amount != null && !isNaN(Number(transaction.commission_details.amount))) {
+          vtpassCommission = Number(transaction.commission_details.amount);
+        } else {
+          vtpassCommission = fallbackProfit;
+        }
+
+        const vtpassTotalAmount = Number(
+          transaction?.total_amount ?? (vtpassAmount - vtpassCommission)
+        );
+
+        const vtpassTransactionId = transaction?.transactionId || requestId;
+        const commissionDetails = transaction?.commission_details || null;
+
         return { 
           success: true, 
-          transactionId: data.content?.transactions?.transactionId || requestId, 
-          costPrice, 
-          profit,
-          response: data 
+          transactionId: vtpassTransactionId,
+          vtpassTransactionId,
+          vtpassAmount,
+          vtpassCommission,
+          vtpassTotalAmount,
+          commissionDetails,
+          costPrice: vtpassTotalAmount,
+          profit: vtpassCommission,
+          response: data
         };
       } else {
-        return { success: false, error: data.response_description || 'TV subscription failed', response: data };
+        return {
+          success: false,
+          error: data.response_description || 'TV subscription failed',
+          costPrice: 0,
+          profit: 0,
+          response: data
+        };
       }
     } catch (err) {
-      return { success: false, error: err.message };
+      return { success: false, error: err.message, costPrice: 0, profit: 0 };
     }
   }
 
   return {
     success: true,
     transactionId: `ST_TV_${Date.now()}`,
-    costPrice,
-    profit,
+    vtpassTransactionId: `ST_TV_${Date.now()}`,
+    vtpassAmount: Number(amount),
+    vtpassCommission: fallbackProfit,
+    vtpassTotalAmount: fallbackCost,
+    commissionDetails: null,
+    costPrice: fallbackCost,
+    profit: fallbackProfit,
     simulated: true,
     message: `${provider} subscription renewal for Smartcard ${smartcardNo} active.`,
   };
 }
 
 export async function processElectricityBill({ provider, meterNo, amount, meterType = 'prepaid', requestId }) {
-  const { costPrice, profit } = calculateProfit('electricity', amount);
+  const { costPrice: fallbackCost, profit: fallbackProfit } = calculateProfit('electricity', amount);
   const token = Array.from({ length: 5 }, () => Math.floor(1000 + Math.random() * 9000)).join('-');
 
   if (VTPASS_API_KEY && VTPASS_SECRET_KEY) {
@@ -331,28 +460,65 @@ export async function processElectricityBill({ provider, meterNo, amount, meterT
       });
       const data = await response.json();
       if (data.code === '000') {
+        const transaction = data.content?.transactions;
+        const vtpassAmount = Number(transaction?.amount ?? transaction?.unit_price ?? amount);
+
+        let vtpassCommission = 0;
+        if (transaction?.commission != null && !isNaN(Number(transaction.commission))) {
+          vtpassCommission = Number(transaction.commission);
+        } else if (transaction?.commission_details?.amount != null && !isNaN(Number(transaction.commission_details.amount))) {
+          vtpassCommission = Number(transaction.commission_details.amount);
+        } else {
+          vtpassCommission = fallbackProfit;
+        }
+
+        const vtpassTotalAmount = Number(
+          transaction?.total_amount ?? (vtpassAmount - vtpassCommission)
+        );
+
+        const vtpassTransactionId = transaction?.transactionId || requestId;
+        const commissionDetails = transaction?.commission_details || null;
+
         return { 
           success: true, 
-          transactionId: data.content?.transactions?.transactionId || requestId, 
+          transactionId: vtpassTransactionId,
+          vtpassTransactionId,
           token: data.token || token,
           units: data.units || `${(amount / 85).toFixed(1)} kWh`,
-          costPrice, 
-          profit,
-          response: data 
+          vtpassAmount,
+          vtpassCommission,
+          vtpassTotalAmount,
+          commissionDetails,
+          costPrice: vtpassTotalAmount,
+          profit: vtpassCommission,
+          response: data
+        };
+      } else {
+        return {
+          success: false,
+          error: data.response_description || 'Electricity payment failed',
+          costPrice: 0,
+          profit: 0,
+          response: data
         };
       }
     } catch (err) {
-      // Fallback
+      return { success: false, error: err.message, costPrice: 0, profit: 0 };
     }
   }
 
   return {
     success: true,
     transactionId: `ST_ELEC_${Date.now()}`,
+    vtpassTransactionId: `ST_ELEC_${Date.now()}`,
     token: token,
     units: `${(amount / 85).toFixed(1)} kWh`,
-    costPrice,
-    profit,
+    vtpassAmount: Number(amount),
+    vtpassCommission: fallbackProfit,
+    vtpassTotalAmount: fallbackCost,
+    commissionDetails: null,
+    costPrice: fallbackCost,
+    profit: fallbackProfit,
     simulated: true,
     message: `Electricity payment of ₦${amount} for Meter ${meterNo} successful. Token: ${token}`,
   };

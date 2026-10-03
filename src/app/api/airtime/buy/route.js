@@ -37,10 +37,21 @@ export async function POST(req) {
     const requestId = `ST_AIR_${Date.now()}`;
     const vtuResult = await processAirtimePurchase({ network, phone, amount: price, requestId });
 
-    if (!vtuResult.success) {
+    const isSuccess = vtuResult.success === true;
+    const status = isSuccess ? 'success' : 'failed';
+
+    if (!isSuccess) {
       user.walletBalance = previousBalance;
       await user.save();
     }
+
+    const vtpassAmount = isSuccess ? Number(vtuResult.vtpassAmount ?? price) : 0;
+    const vtpassCommission = isSuccess ? Number(vtuResult.vtpassCommission ?? 0) : 0;
+    const vtpassTotalAmount = isSuccess ? Number(vtuResult.vtpassTotalAmount ?? (vtpassAmount - vtpassCommission)) : 0;
+    const vtpassTransactionId = isSuccess ? (vtuResult.vtpassTransactionId || requestId) : requestId;
+    const commissionDetails = isSuccess ? (vtuResult.commissionDetails || null) : null;
+    const costPrice = isSuccess ? vtpassTotalAmount : 0;
+    const profit = isSuccess ? vtpassCommission : 0;
 
     const tx = await Transaction.create({
       userId: user._id,
@@ -50,18 +61,23 @@ export async function POST(req) {
       networkOrProvider: network,
       recipient: phone,
       amount: price,
-      costPrice: vtuResult.costPrice || 0,
-      profit: vtuResult.profit || 0,
+      costPrice,
+      profit,
       paymentMethod: 'wallet',
       customerEmail: user.email,
       customerPhone: user.phone,
       previousBalance,
-      newBalance: vtuResult.success ? newBalance : previousBalance,
-      status: vtuResult.success ? 'success' : 'failed',
+      newBalance: isSuccess ? newBalance : previousBalance,
+      status,
       details: vtuResult,
+      vtpassAmount,
+      vtpassCommission,
+      vtpassTotalAmount,
+      vtpassTransactionId,
+      commissionDetails,
     });
 
-    if (!vtuResult.success) {
+    if (!isSuccess) {
       return NextResponse.json({ success: false, message: vtuResult.error || 'Failed to process airtime' }, { status: 500 });
     }
 
